@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @EnableAutoConfiguration
-class EntryPoint {
+public class EntryPoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EntryPoint.class);
 
