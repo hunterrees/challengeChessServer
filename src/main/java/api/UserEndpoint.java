@@ -1,9 +1,11 @@
 package api;
 
+import exception.ServerException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,12 +15,16 @@ class UserEndpoint {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserEndpoint.class);
 
   /**
-   * Gets all users
-   * @return List<User> of all users on the server
+   * Gets all users.
+   * @return List<User> of all users on the server.
    */
   @RequestMapping(method = RequestMethod.GET)
-  String getAllUsers() {
-    LOGGER.info("/users GET hit");
+  String getAllUsers() throws Exception {
+    try {
+      LOGGER.info("/users GET hit");
+    } catch (RuntimeException e) {
+      throw new ServerException(e);
+    }
     return "Not yet implemented";
   }
 
@@ -30,8 +36,12 @@ class UserEndpoint {
    * @return User that was requested.
    */
   @RequestMapping(value="{username}", method=RequestMethod.GET)
-  String getUserInfo(@PathVariable String username) {
-    LOGGER.info("/users/{username} GET hit");
+  String getUserInfo(@PathVariable String username) throws Exception  {
+    try {
+      LOGGER.info("/users/{username} GET hit");
+    } catch (RuntimeException e) {
+      throw new ServerException(e);
+    }
     return "Not yet implemented";
   }
 
@@ -43,9 +53,14 @@ class UserEndpoint {
    * @return User that was created.
    */
   @RequestMapping(value="{username}", method=RequestMethod.POST)
-  String register(@RequestBody User user) {
-    //Body conatins user information
-    LOGGER.info("/users/{username} POST hit");
+  @ResponseStatus(HttpStatus.CREATED)
+  String register(@RequestBody User user) throws Exception {
+    //Body contains user information
+    try {
+      LOGGER.info("/users/{username} POST hit");
+    } catch (RuntimeException e) {
+      throw new ServerException(e);
+    }
     return "Not yet implemented";
   }
 
@@ -58,9 +73,13 @@ class UserEndpoint {
    * @return User that was updated.
    */
   @RequestMapping(value="{username}", method=RequestMethod.PUT)
-  String updateUserInfo(@RequestBody User user) {
+  String updateUserInfo(@RequestBody User user) throws Exception  {
     //Header must contain valid user cookie
-    LOGGER.info("/users/{username} PUT hit");
+    try {
+      LOGGER.info("/users/{username} PUT hit");
+    } catch (RuntimeException e) {
+      throw new ServerException(e);
+    }
     return "Not yet implemented";
   }
 
@@ -74,9 +93,13 @@ class UserEndpoint {
    * @return User that was logged-in.
    */
   @RequestMapping(value="login/{username}", method=RequestMethod.PUT)
-  String login(@PathVariable String username) {
+  String login(@PathVariable String username) throws Exception  {
     //Request Body has some sort of proof of password
-    LOGGER.info("/users/login/{username} PUT hit");
+    try {
+      LOGGER.info("/users/login/{username} PUT hit");
+    } catch (RuntimeException e) {
+      throw new ServerException(e);
+    }
     return "Not yet implemented";
   }
 
@@ -89,9 +112,13 @@ class UserEndpoint {
    * @return User that was logged-out.
    */
   @RequestMapping(value="logout/{username}", method=RequestMethod.PUT)
-  String logout(@PathVariable String username) {
+  String logout(@PathVariable String username) throws Exception {
     //Header must contain valid user cookie
-    LOGGER.info("/users/logout/{username} PUT hit");
+    try {
+      LOGGER.info("/users/logout/{username} PUT hit");
+    } catch (RuntimeException e) {
+      throw new ServerException(e);
+    }
     return "Not yet implemented";
   }
 }
