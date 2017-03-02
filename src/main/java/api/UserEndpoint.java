@@ -1,6 +1,7 @@
 package api;
 
 import exception.ServerException;
+import exception.UserException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,10 @@ class UserEndpoint {
   /**
    * Gets all users.
    * @return List<User> of all users on the server.
+   * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(method = RequestMethod.GET)
-  String getAllUsers() throws Exception {
+  String getAllUsers() throws ServerException  {
     try {
       LOGGER.info("/users GET hit");
     } catch (RuntimeException e) {
@@ -34,9 +36,11 @@ class UserEndpoint {
    *
    * @param username non-null String with the name of user to retrieve.
    * @return User that was requested.
+   * @throws UserException when user cookie is not valid or user is not found.
+   * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="{username}", method=RequestMethod.GET)
-  String getUserInfo(@PathVariable String username) throws Exception  {
+  String getUserInfo(@PathVariable String username) throws UserException, ServerException   {
     try {
       LOGGER.info("/users/{username} GET hit");
     } catch (RuntimeException e) {
@@ -51,10 +55,11 @@ class UserEndpoint {
    *
    * @param user non-null User with the information of the user to add to system.
    * @return User that was created.
+   * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="{username}", method=RequestMethod.POST)
   @ResponseStatus(HttpStatus.CREATED)
-  String register(@RequestBody User user) throws Exception {
+  String register(@RequestBody User user) throws ServerException {
     //Body contains user information
     try {
       LOGGER.info("/users/{username} POST hit");
@@ -66,21 +71,21 @@ class UserEndpoint {
 
   /**
    * Updates the users information on the server.
-   * If successful, returns the update user (Status Code 200).
-   * If the user doesn't exist, null is returned (Status Code 404).
+   * If successful (Status Code 200).
+   * If the user doesn't exist (Status Code 404).
    *
    * @param user non-null User with the information of the user to update.
-   * @return User that was updated.
+   * @throws UserException when user cookie is not valid or user is not found.
+   * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="{username}", method=RequestMethod.PUT)
-  String updateUserInfo(@RequestBody User user) throws Exception  {
+  void updateUserInfo(@RequestBody User user) throws UserException, ServerException   {
     //Header must contain valid user cookie
     try {
       LOGGER.info("/users/{username} PUT hit");
     } catch (RuntimeException e) {
       throw new ServerException(e);
     }
-    return "Not yet implemented";
   }
 
   /**
@@ -91,9 +96,11 @@ class UserEndpoint {
    *
    * @param username non-null String with the name of user to login.
    * @return User that was logged-in.
+   * @throws UserException when user is not found.
+   * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="login/{username}", method=RequestMethod.PUT)
-  String login(@PathVariable String username) throws Exception  {
+  String login(@PathVariable String username) throws UserException, ServerException   {
     //Request Body has some sort of proof of password
     try {
       LOGGER.info("/users/login/{username} PUT hit");
@@ -105,20 +112,20 @@ class UserEndpoint {
 
   /**
    * Logs out the user specified.
-   * If successful, returns the logged-out user (Status Code 200).
-   * If user doesn't exist, returns null (Status Code 404).
+   * If successful (Status Code 200).
+   * If user doesn't exist (Status Code 404).
    *
    * @param username non-null String with the name of user to log out.
-   * @return User that was logged-out.
+   * @throws UserException when user cookie is not valid or user is not found.
+   * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="logout/{username}", method=RequestMethod.PUT)
-  String logout(@PathVariable String username) throws Exception {
+  void logout(@PathVariable String username) throws UserException, ServerException  {
     //Header must contain valid user cookie
     try {
       LOGGER.info("/users/logout/{username} PUT hit");
     } catch (RuntimeException e) {
       throw new ServerException(e);
     }
-    return "Not yet implemented";
   }
 }
