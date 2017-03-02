@@ -1,5 +1,6 @@
 package facade;
 
+import exception.InvalidUserCookieException;
 import exception.InvalidPasswordException;
 import exception.UserNotFoundException;
 import model.User;
@@ -25,8 +26,9 @@ public class UserFacade {
    * @Pre User must exist.
    * @return Returns User object for specified user.
    * @throws UserNotFoundException if user is not found.
+   * @throws InvalidUserCookieException if the cookie is invalid.
    */
-  public User getUser(String username, String cookie) throws UserNotFoundException {
+  public User getUser(String username, String cookie) throws UserNotFoundException, InvalidUserCookieException {
     return null;
   }
 
@@ -57,8 +59,9 @@ public class UserFacade {
    *
    * @Pre User with matching username already exists.
    * @Post Sets user to offline.
+   * @throws InvalidUserCookieException if the cookie is invalid.
    */
-  public void logout(String username, String cookie) {
+  public void logout(String username, String cookie) throws InvalidUserCookieException {
   }
 
   /**
@@ -67,8 +70,9 @@ public class UserFacade {
    * @Pre User is non null.
    * @Post User with matching username will be updated but win record won't be affected.
    * @throws UserNotFoundException if user does not exist.
+   * @throws InvalidUserCookieException if the cookie is invalid.
    *
    */
-  public void updateUser(User user, String cookie) throws UserNotFoundException{
+  public void updateUser(User user, String cookie) throws UserNotFoundException, InvalidUserCookieException {
   }
 }
