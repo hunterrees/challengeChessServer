@@ -73,14 +73,13 @@ class UserEndpoint {
    * @return User that was updated.
    */
   @RequestMapping(value="{username}", method=RequestMethod.PUT)
-  String updateUserInfo(@RequestBody User user) throws Exception  {
+  void updateUserInfo(@RequestBody User user) throws Exception  {
     //Header must contain valid user cookie
     try {
       LOGGER.info("/users/{username} PUT hit");
     } catch (RuntimeException e) {
       throw new ServerException(e);
     }
-    return "Not yet implemented";
   }
 
   /**
@@ -112,13 +111,12 @@ class UserEndpoint {
    * @return User that was logged-out.
    */
   @RequestMapping(value="logout/{username}", method=RequestMethod.PUT)
-  String logout(@PathVariable String username) throws Exception {
+  void logout(@PathVariable String username) throws Exception {
     //Header must contain valid user cookie
     try {
       LOGGER.info("/users/logout/{username} PUT hit");
     } catch (RuntimeException e) {
       throw new ServerException(e);
     }
-    return "Not yet implemented";
   }
 }
