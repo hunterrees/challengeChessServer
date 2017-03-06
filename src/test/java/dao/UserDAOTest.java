@@ -85,4 +85,17 @@ public class UserDAOTest {
 
     testModel.updateUser(user1);
   }
+
+  @Test
+  public void shouldReturnTrueIfUserExists() {
+    testModel.addUser(user1);
+    boolean result = testModel.hasUser("user1");
+    assertEquals(result, true);
+  }
+
+  @Test
+  public void shouldReturnFalseIfUserDoesNotExist() {
+    boolean result = testModel.hasUser("user1");
+    assertEquals(result, false);
+  }
 }
