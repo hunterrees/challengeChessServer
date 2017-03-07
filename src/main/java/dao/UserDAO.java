@@ -49,6 +49,11 @@ public class UserDAO {
     return result;
   }
 
+  public boolean hasUser(String username) {
+    LOGGER.info("Checking if user {} exists", username);
+    return users.get(username) != null;
+  }
+
   /**
    * Adds user to the database in the logged-in position. Username must be unique.
    * Username, password, online, and email fields are initialized; Other fields are 0/null.
