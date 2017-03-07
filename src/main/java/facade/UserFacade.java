@@ -8,6 +8,9 @@ import exception.UserNotFoundException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class UserFacade {
@@ -18,8 +21,9 @@ public class UserFacade {
   public UserFacade(){
       userDao = new UserDAO();
   }
+  public UserFacade(UserDAO userDAO){this.userDao = userDAO;}
 
-  private boolean validateUserCookie(String cookie){
+  boolean validateUserCookie(String cookie){
       //TODO: check cookie for valid user
       String cookieUserName = null;
       String cookiePassword = null;
@@ -34,6 +38,22 @@ public class UserFacade {
           return false;
       }
           return true;
+  }
+
+  String makeUserCookie(String username) throws UserNotFoundException, NoSuchAlgorithmException {
+
+      User user = userDao.getUser(username);
+      String password = user.getPassword();
+      String email = user.getEmail();
+      String toHash = username + password + email;
+
+      MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+
+      sha256.reset();
+      sha256.update(toHash.getBytes());
+      byte[] fullHash = sha256.digest();
+
+      return new String(fullHash);
   }
 
   /**
