@@ -1,7 +1,7 @@
 package api;
 
 import exception.ServerException;
-import exception.UserException;
+import exception.user.UserException;
 import facade.UserFacade;
 import model.User;
 import org.slf4j.Logger;
