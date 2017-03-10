@@ -43,14 +43,16 @@ public class GameDAO {
    * @param player1 non-null string of first player to play in game.
    * @param player2 non-null string of second player to play in game.
    * @throws GameException if game has the same player twice.
+   * @return Created game.
    */
-  public void createGame(String player1, String player2) throws GameException {
+  public Game createGame(String player1, String player2) throws GameException {
     LOGGER.info("Creating a game with users {} and {}", player1, player2);
     if (player1.equals(player2)) {
       throw new GameException("Can't have a game with the same player twice.");
     }
     Game game = new Game(games.size(), player1, player2, GameStatus.PLAYING);
     games.add(game);
+    return game;
   }
 
   /**
