@@ -44,7 +44,7 @@ public class EntryPoint {
 
   @RequestMapping(value="socket/{username}", method=RequestMethod.POST)
   void setUpSocket(@PathVariable String username) throws UserNotFoundException {
-
+    
   }
 
   /**
