@@ -1,6 +1,6 @@
 package dao;
 
-import exception.UserNotFoundException;
+import exception.user.UserNotFoundException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

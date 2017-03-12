@@ -1,6 +1,6 @@
 package dao;
 
-import exception.UserNotFoundException;
+import exception.user.UserNotFoundException;
 import model.User;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -48,11 +48,11 @@ public class UserDAOTest {
     assertEquals(result, user1);
   }
 
-  @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User user1 not found.*")
+  @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User user2 not found.*")
   public void shouldThrowErrorIfUserNotFoundWhenRetrieving() throws UserNotFoundException {
-    testModel.addUser(user2);
+    testModel.addUser(user1);
 
-    testModel.getUser("user1");
+    testModel.getUser("user2");
   }
 
   @Test
@@ -95,7 +95,7 @@ public class UserDAOTest {
 
   @Test
   public void shouldReturnFalseIfUserDoesNotExist() {
-    boolean result = testModel.hasUser("user1");
+    boolean result = testModel.hasUser("user2");
     assertEquals(result, false);
   }
 }

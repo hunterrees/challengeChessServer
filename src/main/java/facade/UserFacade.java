@@ -1,8 +1,8 @@
 package facade;
 
-import exception.InvalidUserCookieException;
-import exception.InvalidPasswordException;
-import exception.UserNotFoundException;
+import exception.user.InvalidUserCookieException;
+import exception.user.InvalidPasswordException;
+import exception.user.UserNotFoundException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

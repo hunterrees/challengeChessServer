@@ -1,6 +1,10 @@
 package api;
 
 import exception.*;
+import exception.user.InvalidPasswordException;
+import exception.user.InvalidUserCookieException;
+import exception.user.UserException;
+import exception.user.UserNotFoundException;
 import facade.UserFacade;
 import model.User;
 import org.mockito.Mock;
