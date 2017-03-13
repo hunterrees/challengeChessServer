@@ -4,6 +4,7 @@ import exception.ServerException;
 import exception.user.UserException;
 import facade.UserFacade;
 import model.User;
+import model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -68,12 +69,13 @@ class UserEndpoint {
    * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="{username}", method=RequestMethod.GET)
-  User getUserInfo(@PathVariable String username,
-                   @RequestParam(USER_COOKIE) String cookie) throws UserException, ServerException {
-    User result;
+  UserInfo getUserInfo(@PathVariable String username,
+                       @RequestParam(USER_COOKIE) String cookie) throws UserException, ServerException {
+    UserInfo result;
     try {
       LOGGER.info("/users/{username} GET hit with username {} and cookie {}", username, cookie);
-      result = userFacade.getUser(username, cookie);
+      User user = userFacade.getUser(username, cookie);
+      result = new UserInfo(user);
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/{username} GET {}", e);
       throw new ServerException(e);
