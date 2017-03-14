@@ -1,13 +1,13 @@
 package api;
 
-import exception.user.UserNotFoundException;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.RestController;
 
+import exception.user.UserNotFoundException;
 import model.DHParams;
+import model.SocketInfo;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.spec.DHParameterSpec;
@@ -23,7 +23,6 @@ import java.util.Map;
 public class EntryPoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EntryPoint.class);
-
 
   private static final int RANDOM_NUMBER_BIT_LENGTH = 500;
 
@@ -42,9 +41,16 @@ public class EntryPoint {
     params = new DHParameterSpec(p, g);
   }
 
-  @RequestMapping(value="socket/{username}", method=RequestMethod.POST)
-  void setUpSocket(@PathVariable String username) throws UserNotFoundException {
-    
+  /**
+   * Sets up a socket with the given user.
+   * This socket will be used to notify the user of created games or moves.
+   *
+   * @param username non-null string of the user who is asking for a socket.
+   * @param socketInfo Host and port of the client's socket.
+   */
+  @RequestMapping (value="socket/{username}", method=RequestMethod.POST)
+  void setUpSocket(@PathVariable String username, @RequestBody SocketInfo socketInfo) {
+    LOGGER.info("Socket endpoint hit by {} with {}", username, socketInfo);
   }
 
   /**
@@ -61,6 +67,7 @@ public class EntryPoint {
       privateExponents.put(username, s);
     }
     BigInteger publicParam = modExp(params.getG(), privateExponents.get(username), params.getP());
+    LOGGER.info("Sending public parameter {] to {]", publicParam, username);
     return new DHParams(params, publicParam.toByteArray());
   }
 
@@ -73,6 +80,7 @@ public class EntryPoint {
    */
   @RequestMapping(value="crypt/end/{username}", method=RequestMethod.POST)
   void setUpSharedKey(@PathVariable String username, @RequestBody DHParams parameters) throws UserNotFoundException {
+    LOGGER.info("Setting up shared key for {} with parameters {}", username, parameters);
     BigInteger publicParam = new BigInteger(parameters.getPublicParam());
     if (privateExponents.get(username) == null) {
       throw new UserNotFoundException("Request initial parameters first");
