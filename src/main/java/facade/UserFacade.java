@@ -1,35 +1,91 @@
 package facade;
 
-import exception.user.InvalidUserCookieException;
-import exception.user.InvalidPasswordException;
-import exception.user.UserNotFoundException;
+import dao.UserDAO;
+import exception.InvalidUserCookieException;
+import exception.InvalidPasswordException;
+import exception.UserException;
+import exception.UserNotFoundException;
+
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class UserFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserFacade.class);
+  private UserDAO userDao;
+
+  public UserFacade(){
+      userDao = new UserDAO();
+  }
+  public UserFacade(UserDAO userDAO){this.userDao = userDAO;}
+
+  boolean validateUserCookie(String cookie){
+      //TODO: check cookie for valid user
+      String cookieUserName = null;
+      String cookiePassword = null;
+      User tempUser = null;
+      try {
+          tempUser = userDao.getUser(cookieUserName);
+          if(tempUser.getPassword() != cookiePassword){
+              return false;
+          }
+      } catch (UserNotFoundException e) {
+          e.printStackTrace();
+          return false;
+      }
+          return true;
+  }
+
+  String makeUserCookie(String username) throws UserNotFoundException, NoSuchAlgorithmException {
+
+      User user = userDao.getUser(username);
+      String password = user.getPassword();
+      String email = user.getEmail();
+      String toHash = username + password + email;
+
+      MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+
+      sha256.reset();
+      sha256.update(toHash.getBytes());
+      byte[] fullHash = sha256.digest();
+
+      return new String(fullHash);
+  }
 
   /**
    * @Pre None.
-   * @return List<User> of all users currently registered (see User class).
+   * @return List<String> of all usernames currently registered.
    */
   public List<User> getAllUsers() {
-    return null;
+      LOGGER.info("UserFacade.getAllUsers");
+      //TODO: get all users from DAO then just get the usernames and return them
+
+      return userDao.getAllUsers();
   }
 
   /**
    * Get specific user.
    *
    * @Pre User must exist.
-   * @return Returns User object for specified user.
+   * @return Returns UserInfo object for specified user.
    * @throws UserNotFoundException if user is not found.
    * @throws InvalidUserCookieException if the cookie is invalid.
    */
   public User getUser(String username, String cookie) throws UserNotFoundException, InvalidUserCookieException {
-    return null;
+      LOGGER.info("UserFacade.getUser");
+      //TODO: return UserInfo
+      if(!validateUserCookie(cookie)){
+          throw new InvalidUserCookieException();
+      }
+      User user = userDao.getUser(username);
+
+
+      return user;
   }
 
   /**
@@ -38,9 +94,21 @@ public class UserFacade {
    * @Pre Username is unique; username, password, online, and email fields are initialized; other fields are 0/null.
    * @Post User object is in database, user cookie is created.
    * @return User cookie.
+   * @throws UserException if that username is already taken or if the username has a ':' in it
    */
-  public String register(User basicUser) {
-    return null;
+  public String register(User basicUser){
+
+      LOGGER.info("UserFacade.register");
+      try {
+          userDao.getUser(basicUser.getUsername());
+          //TODO: throw new UserNotFoundException(); //User was already in the database
+
+      } catch (UserNotFoundException e) {
+          basicUser.setOnline();
+          userDao.addUser(basicUser);
+      }
+      //TODO: create user cookie
+      return null;
   }
 
   /**
@@ -51,8 +119,19 @@ public class UserFacade {
    * @throws UserNotFoundException if user is not found.
    * @throws InvalidPasswordException if password is not verified.
    */
-  public String login(String username, String password) throws UserNotFoundException, InvalidPasswordException {
-    return null;
+  public String login(String username, String password) throws UserNotFoundException, InvalidPasswordException, NoSuchAlgorithmException {
+
+      LOGGER.info("UserFacade.login");
+      User tempUser = userDao.getUser(username);
+      if(tempUser.getPassword() != password){
+          throw new InvalidPasswordException("Invalid Password");
+      }else{
+          tempUser.setOnline();
+          userDao.updateUser(tempUser);
+      }
+
+      return makeUserCookie(username);
+
   }
 
   /**
@@ -61,7 +140,15 @@ public class UserFacade {
    * @Post Sets user to offline.
    * @throws InvalidUserCookieException if the cookie is invalid.
    */
-  public void logout(String username, String cookie) throws InvalidUserCookieException {
+  public void logout(String username, String cookie) throws InvalidUserCookieException, UserNotFoundException{
+
+      LOGGER.info("UserFacade.logout");
+      if(!validateUserCookie(cookie)){
+          throw new InvalidUserCookieException();
+      }
+      User tempUser = userDao.getUser(username);
+      tempUser.setOffline();
+      userDao.updateUser(tempUser);
   }
 
   /**
@@ -74,5 +161,11 @@ public class UserFacade {
    *
    */
   public void updateUser(User user, String cookie) throws UserNotFoundException, InvalidUserCookieException {
+
+      LOGGER.info("UserFacade.updateUser");
+      if(!validateUserCookie(user.getUsername())){
+          throw new InvalidUserCookieException();
+      }
+      userDao.updateUser(user);
   }
 }

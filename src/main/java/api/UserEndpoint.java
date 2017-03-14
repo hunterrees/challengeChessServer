@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -139,7 +140,7 @@ class UserEndpoint {
    * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="login/{username}", method=RequestMethod.PUT)
-  String login(@PathVariable String username, @RequestBody User user) throws UserException, ServerException {
+  String login(@PathVariable String username, @RequestBody User user) throws UserException, ServerException, NoSuchAlgorithmException {
     String result;
     try {
       LOGGER.info("/users/login/{username} PUT hit with username {} and user {}", username, user);
