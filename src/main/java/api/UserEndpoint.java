@@ -44,21 +44,21 @@ class UserEndpoint {
   /**
    * Gets all users.
    *
-   * @return List<User> of all users on the server.
+   * @return List<String> of all users on the server.
    * @throws ServerException when an unexpected error occurs.
    */
-  @RequestMapping(method=RequestMethod.GET)
-  List<User> getAllUsers() throws ServerException {
-    //TODO: Change to return List<String> with just user-names
-    List<User> usernames;
+
+  @RequestMapping(method = RequestMethod.GET)
+  List<String> getAllUsers() throws ServerException {
+    List<String> result;
     try {
       LOGGER.info("/users GET hit");
-      usernames = userFacade.getAllUsers();
+      result = userFacade.getAllUsers();
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users GET {}", e);
       throw new ServerException(e);
     }
-    return usernames;
+    return result;
   }
 
   /**
@@ -74,16 +74,15 @@ class UserEndpoint {
   @RequestMapping(value="{username}", method=RequestMethod.GET)
   UserInfo getUserInfo(@PathVariable String username,
                        @RequestParam(USER_COOKIE) String cookie) throws UserException, ServerException {
-    UserInfo userInfo;
+    UserInfo result;
     try {
       LOGGER.info("/users/{username} GET hit with username {} and cookie {}", username, cookie);
-      User user = userFacade.getUser(username, cookie);
-      userInfo = new UserInfo(user);
+      result = userFacade.getUser(username, cookie);
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/{username} GET {}", e);
       throw new ServerException(e);
     }
-    return userInfo;
+    return result;
   }
 
   /**

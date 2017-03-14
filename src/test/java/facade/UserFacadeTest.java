@@ -32,6 +32,8 @@ public class UserFacadeTest {
     private User user2;
     private User user3;
 
+    private CookieManager cookieManager;
+
     @Mock
     private UserDao mockUserDao;
 
@@ -52,20 +54,25 @@ public class UserFacadeTest {
         when(mockUserDao.getUser("user2")).thenReturn(user2);
 
 
+<<<<<<< HEAD
         testUserFacade = new UserFacade(mockUserDao);
+=======
+        testUserFacade = new UserFacade(mockUserDAO);
+        cookieManager = new CookieManager(mockUserDAO);
+>>>>>>> cookie manager, userdao is singleton, getalluser returns list<String>, get user returns userinfo, changed some things in userAPI to match that
     }
 
     @Test
     public void shouldMakeMatchingHash() throws UserNotFoundException, NoSuchAlgorithmException{
-        String user1Cookie = testUserFacade.makeUserCookie("user1");
-        String user1Cookie2 = testUserFacade.makeUserCookie("user1");
+        String user1Cookie = cookieManager.makeUserCookie("user1");
+        String user1Cookie2 = cookieManager.makeUserCookie("user1");
         assertEquals(user1Cookie, user1Cookie2);
     }
 
     @Test
     public void shouldMakeNonMatchingHash() throws UserNotFoundException, NoSuchAlgorithmException{
-        String user1Cookie = testUserFacade.makeUserCookie("user1");
-        String user2Cookie = testUserFacade.makeUserCookie("user2");
+        String user1Cookie = cookieManager.makeUserCookie("user1");
+        String user2Cookie = cookieManager.makeUserCookie("user2");
         assertNotEquals(user1Cookie, user2Cookie);
     }
 

@@ -15,9 +15,17 @@ public class UserDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
   private Map<String, User> users;
+  private static UserDao userDAO = null;
 
-  public UserDao() {
+  private UserDao() {
     users = new HashMap<>();
+  }
+
+  public static UserDao getInstance(){
+    if(userDAO == null){
+      userDAO = new UserDao();
+    }
+    return userDAO;
   }
 
   /**
