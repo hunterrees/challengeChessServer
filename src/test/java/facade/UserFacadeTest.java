@@ -59,7 +59,6 @@ public class UserFacadeTest {
     public void shouldMakeMatchingHash() throws UserNotFoundException, NoSuchAlgorithmException{
         String user1Cookie = testUserFacade.makeUserCookie("user1");
         String user1Cookie2 = testUserFacade.makeUserCookie("user1");
-        System.out.println("user1 Cookie:" + user1Cookie);
         assertEquals(user1Cookie, user1Cookie2);
     }
 

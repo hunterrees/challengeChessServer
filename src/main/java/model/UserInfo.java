@@ -71,4 +71,22 @@ public class UserInfo {
   public void addDraw() {
     draws++;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    UserInfo userInfo = (UserInfo) o;
+
+    return online == userInfo.online &&
+            rank == userInfo.rank &&
+            wins == userInfo.wins &&
+            loses == userInfo.loses &&
+            draws == userInfo.draws &&
+            (username != null ? username.equals(userInfo.username) : userInfo.username == null) &&
+            (email != null ? email.equals(userInfo.email) : userInfo.email == null) &&
+            (friends != null ? friends.equals(userInfo.friends) : userInfo.friends == null);
+  }
+
 }

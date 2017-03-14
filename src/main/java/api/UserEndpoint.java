@@ -46,7 +46,7 @@ class UserEndpoint {
    * @return List<User> of all users on the server.
    * @throws ServerException when an unexpected error occurs.
    */
-  @RequestMapping(method = RequestMethod.GET)
+  @RequestMapping(method=RequestMethod.GET)
   List<User> getAllUsers() throws ServerException {
     List<User> result;
     try {

@@ -46,6 +46,7 @@ public class GameFacade {
    * @return List of games the user has played in.
    */
   public List<Game> getUserGames(String username) {
+    LOGGER.info("Getting all games for user {}", username);
     return gameDAO.getUserGames(username);
   }
 
@@ -60,6 +61,7 @@ public class GameFacade {
    */
   public Game getGame(int gameId, String username, String userCookie)
           throws InvalidUserCookieException, GameNotFoundException {
+    LOGGER.info("Getting game {} for user {}", gameId, username);
     validateCookie(username, userCookie);
     return gameDAO.getGame(gameId);
   }
@@ -76,6 +78,7 @@ public class GameFacade {
    */
   public Game createGame(String player1, String player2, String userCookie)
           throws InvalidUserCookieException, GameException {
+    LOGGER.info("Creating game between {} and {}", player1, player2);
     validateCookie(player1, userCookie);
     return gameDAO.createGame(player1, player2);
   }
@@ -89,6 +92,7 @@ public class GameFacade {
    * @throws InvalidUserCookieException if user cookie is invalid.
    */
   public Game createRandomGame(String username, String userCookie) throws InvalidUserCookieException, GameException {
+    LOGGER.info("Creating random game for {}", username);
     List<User> users = userDAO.getAllUsers();
     String player2 = username;
     while (player2.equals(username) || player2.equals("pamela")) {
@@ -107,6 +111,7 @@ public class GameFacade {
    */
   public Game createMachineLearningGame(String username, String userCookie)
           throws InvalidUserCookieException, GameException {
+    LOGGER.info("Creating game for {} with pamela", username);
     return createGame(username, "pamela", userCookie);
   }
 
