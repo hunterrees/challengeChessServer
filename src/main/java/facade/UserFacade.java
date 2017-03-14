@@ -5,6 +5,7 @@ import exception.InvalidUserCookieException;
 import exception.InvalidPasswordException;
 import exception.UserException;
 import exception.UserNotFoundException;
+
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

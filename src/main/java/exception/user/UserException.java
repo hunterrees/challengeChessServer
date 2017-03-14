@@ -1,4 +1,4 @@
-package exception;
+package exception.user;
 
 public class UserException extends Exception {
   public UserException() {
