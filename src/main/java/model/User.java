@@ -35,6 +35,8 @@ public class User {
     return password;
   }
 
+  public String getEmail(){return email;}
+
   public void setPassword(String password) {
     this.password = password;
   }
@@ -69,5 +71,9 @@ public class User {
 
   public void addDraw() {
     draws++;
+  }
+
+  public boolean isOnline(){
+    return online;
   }
 }

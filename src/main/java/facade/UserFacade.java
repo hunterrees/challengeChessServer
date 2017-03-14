@@ -58,10 +58,11 @@ public class UserFacade {
 
   /**
    * @Pre None.
-   * @return List<User> of all users currently registered (see User class).
+   * @return List<String> of all usernames currently registered.
    */
   public List<User> getAllUsers() {
       LOGGER.info("UserFacade.getAllUsers");
+      //TODO: get all users from DAO then just get the usernames and return them
 
       return userDao.getAllUsers();
   }
@@ -70,12 +71,13 @@ public class UserFacade {
    * Get specific user.
    *
    * @Pre User must exist.
-   * @return Returns User object for specified user.
+   * @return Returns UserInfo object for specified user.
    * @throws UserNotFoundException if user is not found.
    * @throws InvalidUserCookieException if the cookie is invalid.
    */
   public User getUser(String username, String cookie) throws UserNotFoundException, InvalidUserCookieException {
       LOGGER.info("UserFacade.getUser");
+      //TODO: return UserInfo
       if(!validateUserCookie(cookie)){
           throw new InvalidUserCookieException();
       }
@@ -91,6 +93,7 @@ public class UserFacade {
    * @Pre Username is unique; username, password, online, and email fields are initialized; other fields are 0/null.
    * @Post User object is in database, user cookie is created.
    * @return User cookie.
+   * @throws UserException if that username is already taken or if the username has a ':' in it
    */
   public String register(User basicUser){
 
@@ -115,18 +118,19 @@ public class UserFacade {
    * @throws UserNotFoundException if user is not found.
    * @throws InvalidPasswordException if password is not verified.
    */
-  public String login(String username, String password) throws UserNotFoundException, InvalidPasswordException {
+  public String login(String username, String password) throws UserNotFoundException, InvalidPasswordException, NoSuchAlgorithmException {
 
       LOGGER.info("UserFacade.login");
       User tempUser = userDao.getUser(username);
       if(tempUser.getPassword() != password){
-          throw new InvalidPasswordException();
+          throw new InvalidPasswordException("Invalid Password");
       }else{
           tempUser.setOnline();
           userDao.updateUser(tempUser);
       }
-      //TODO create usercookie
-      return null;
+
+      return makeUserCookie(username);
+
   }
 
   /**

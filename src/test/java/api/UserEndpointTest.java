@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class UserEndpointTest {
   }
 
   @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Exception expected.*")
-  public void shouldNotWrapUserExceptions() throws UserException {
+  public void shouldNotWrapUserExceptions() throws UserException, NoSuchAlgorithmException {
     doThrow(new UserNotFoundException("User Exception expected")).when(mockUserFacade).login("user3", "password3");
     testModel.login("user3", user3);
   }
@@ -106,13 +107,13 @@ public class UserEndpointTest {
   }
 
   @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Not Found.*")
-  public void shouldThrowUserExceptionWhenUserDoesNotExist() throws UserException {
+  public void shouldThrowUserExceptionWhenUserDoesNotExist() throws UserException, NoSuchAlgorithmException {
     doThrow(new UserNotFoundException("User Not Found")).when(mockUserFacade).login("user3", "password3");
     testModel.login("user3", user3);
   }
 
   @Test (expectedExceptions = InvalidPasswordException.class, expectedExceptionsMessageRegExp = ".*Invalid Password.*")
-  public void shouldThrowExceptionWhenPasswordsDoNotMatch() throws UserException {
+  public void shouldThrowExceptionWhenPasswordsDoNotMatch() throws UserException, NoSuchAlgorithmException {
     doThrow(new InvalidPasswordException("Invalid Password")).when(mockUserFacade).login("user2", "password3");
     testModel.login("user2", user3);
   }

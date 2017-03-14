@@ -3,6 +3,8 @@ package facade;
 
 import dao.UserDAO;
 
+import exception.InvalidPasswordException;
+import exception.InvalidUserCookieException;
 import exception.UserException;
 import exception.UserNotFoundException;
 import model.User;
@@ -16,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import static junit.framework.TestCase.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
@@ -48,6 +53,7 @@ public class UserFacadeTest {
         when(mockUserDAO.getUser("user1")).thenReturn(user1);
         when(mockUserDAO.getUser("user2")).thenReturn(user2);
 
+
         testUserFacade = new UserFacade(mockUserDAO);
     }
 
@@ -64,6 +70,27 @@ public class UserFacadeTest {
         String user1Cookie = testUserFacade.makeUserCookie("user1");
         String user2Cookie = testUserFacade.makeUserCookie("user2");
         assertNotEquals(user1Cookie, user2Cookie);
+    }
+
+    @Test
+    public void shouldLogin() throws UserNotFoundException, InvalidPasswordException, NoSuchAlgorithmException, InvalidUserCookieException {
+
+        user1.setOffline();
+        testUserFacade.login("user1","password1");
+        assertTrue(user1.isOnline());
+    }
+
+    @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Not Found.*")
+    public void noSuchUserLogin() throws UserNotFoundException, NoSuchAlgorithmException, InvalidPasswordException {
+        doThrow(new UserNotFoundException("User Not Found")).when(mockUserDAO).getUser("fakeUser");
+        testUserFacade.login("fakeUser","fakePassword");
+    }
+
+    @Test (expectedExceptions = InvalidPasswordException.class, expectedExceptionsMessageRegExp = ".*Invalid Password.*")
+    public void badPasswordLogin() throws UserNotFoundException, NoSuchAlgorithmException, InvalidPasswordException {
+
+        testUserFacade.login("user1","notRealPassword");
+
     }
 
 }
