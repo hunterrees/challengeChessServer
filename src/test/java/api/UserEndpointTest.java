@@ -1,12 +1,13 @@
 package api;
 
-import exception.*;
+import exception.ServerException;
 import exception.user.InvalidPasswordException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserException;
 import exception.user.UserNotFoundException;
 import facade.UserFacade;
 import model.User;
+import model.UserInfo;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -16,9 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
@@ -66,11 +65,11 @@ public class UserEndpointTest {
 
   @Test
   public void shouldGetASingleUser() throws UserException {
-    User result = testModel.getUserInfo("user1", VALID_COOKIE);
-    assertEquals(result, user1);
+    UserInfo result = testModel.getUserInfo("user1", VALID_COOKIE);
+    assertEquals(result, new UserInfo(user1));
 
     result = testModel.getUserInfo("user2", VALID_COOKIE);
-    assertEquals(result, user2);
+    assertEquals(result, new UserInfo(user2));
   }
 
   @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Exception expected.*")

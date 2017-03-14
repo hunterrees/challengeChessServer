@@ -3,10 +3,10 @@ package facade;
 
 import dao.UserDAO;
 
-import exception.InvalidPasswordException;
-import exception.InvalidUserCookieException;
-import exception.UserException;
-import exception.UserNotFoundException;
+import exception.user.InvalidPasswordException;
+import exception.user.InvalidUserCookieException;
+import exception.user.UserException;
+import exception.user.UserNotFoundException;
 import model.User;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -17,13 +17,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertTrue;
 
 public class UserFacadeTest {
 
