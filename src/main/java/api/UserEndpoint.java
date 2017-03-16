@@ -46,7 +46,7 @@ class UserEndpoint {
    * @return List<User> of all users on the server.
    * @throws ServerException when an unexpected error occurs.
    */
-  @RequestMapping(method = RequestMethod.GET)
+  @RequestMapping(method=RequestMethod.GET)
   List<User> getAllUsers() throws ServerException {
     List<User> result;
     try {
@@ -62,7 +62,7 @@ class UserEndpoint {
   /**
    * Gets the user specified.
    * If the user doesn't exist, null is returned (Status Code 404).
-   * If cookie is invalid (Status Cod 403).
+   * If cookie is invalid (Status Code 403).
    *
    * @param username non-null String with the name of user to retrieve.
    * @return User that was requested.
