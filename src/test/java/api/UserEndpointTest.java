@@ -1,10 +1,7 @@
 package api;
 
 import exception.ServerException;
-import exception.user.InvalidPasswordException;
-import exception.user.InvalidUserCookieException;
-import exception.user.UserException;
-import exception.user.UserNotFoundException;
+import exception.user.*;
 import facade.UserFacade;
 import model.User;
 import model.UserInfo;
@@ -54,6 +51,7 @@ public class UserEndpointTest {
     doThrow(new InvalidUserCookieException("Invalid Cookie")).when(mockUserFacade).getUser(anyString(), eq(INVALID_COOKIE));
     doThrow(new InvalidUserCookieException("Invalid Cookie")).when(mockUserFacade).logout(anyString(), eq(INVALID_COOKIE));
     doThrow(new InvalidUserCookieException("Invalid Cookie")).when(mockUserFacade).updateUser(any(), eq(INVALID_COOKIE));
+    doThrow(new UserAlreadyExistsException("User already exists")).when(mockUserFacade).register(user2);
     testModel = new UserEndpoint(mockUserFacade);
   }
 
@@ -122,8 +120,12 @@ public class UserEndpointTest {
   }
 
   @Test
-  public void shouldRegisterSuccessfully() {
+  public void shouldRegisterSuccessfully() throws UserException {
     testModel.register(user3);
   }
 
+  @Test (expectedExceptions = UserAlreadyExistsException.class, expectedExceptionsMessageRegExp = ".*User already exists.*")
+  public void shouldThrowUserAlreadyExistsExceptionWhenAttemptingToReRegisterUser() throws UserException {
+    testModel.register(user2);
+  }
 }

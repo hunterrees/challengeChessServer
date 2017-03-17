@@ -1,6 +1,6 @@
 package facade;
 
-import dao.UserDAO;
+import dao.UserDao;
 import exception.user.InvalidUserCookieException;
 import exception.user.InvalidPasswordException;
 import exception.user.UserException;
@@ -17,12 +17,12 @@ import java.util.List;
 public class UserFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserFacade.class);
-  private UserDAO userDao;
+  private UserDao userDao;
 
   public UserFacade(){
-      userDao = new UserDAO();
+      userDao = new UserDao();
   }
-  public UserFacade(UserDAO userDAO){this.userDao = userDAO;}
+  public UserFacade(UserDao userDao){this.userDao = userDao;}
 
   boolean validateUserCookie(String cookie){
       //TODO: check cookie for valid user
@@ -96,7 +96,7 @@ public class UserFacade {
    * @return User cookie.
    * @throws UserException if that username is already taken or if the username has a ':' in it
    */
-  public String register(User basicUser){
+  public String register(User basicUser) throws UserException {
 
       LOGGER.info("UserFacade.register");
       try {

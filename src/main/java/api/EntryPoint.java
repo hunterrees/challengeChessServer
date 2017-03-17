@@ -72,7 +72,7 @@ public class EntryPoint {
   }
 
   /**
-   * Creates shared key based on the public key given in the body.
+   * Creates shared key based on the public parameter given in the body.
    *
    * @param username non-null string of the user who is requesting Diffie-Hellman.
    * @param parameters Diffie-Hellman parameters of the user.
@@ -83,7 +83,7 @@ public class EntryPoint {
     LOGGER.info("Setting up shared key for {} with parameters {}", username, parameters);
     BigInteger publicParam = new BigInteger(parameters.getPublicParam());
     if (privateExponents.get(username) == null) {
-      throw new UserNotFoundException("Request initial parameters first");
+      throw new UserNotFoundException("Request initial parameters first \"crypt/init/{username}\"");
     }
     BigInteger sharedKey = modExp(publicParam, privateExponents.get(username), parameters.getParams().getP());
     byte[] result = new byte[16];
