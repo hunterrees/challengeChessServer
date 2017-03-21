@@ -30,6 +30,10 @@ public class UserFacade {
         this.userDao = userDao;
         cookieManager = new CookieManager();
     }
+    public UserFacade(UserDao userDAO, CookieManager cookieManager){
+        this.userDao = userDAO;
+        this.cookieManager = cookieManager;
+    }
 
     /**
      * @Pre None.

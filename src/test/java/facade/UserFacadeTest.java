@@ -8,6 +8,7 @@ import exception.user.InvalidUserCookieException;
 import exception.user.UserException;
 import exception.user.UserNotFoundException;
 import model.User;
+import model.UserInfo;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -15,8 +16,11 @@ import org.testng.annotations.Test;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
@@ -32,10 +36,11 @@ public class UserFacadeTest {
     private User user2;
     private User user3;
 
-    private CookieManager cookieManager;
+    @Mock
+    private UserDao mockUserDAO;
 
     @Mock
-    private UserDao mockUserDao;
+    private CookieManager mockCookieManager;
 
     @BeforeMethod
     public void setUp() throws UserException {
@@ -47,34 +52,51 @@ public class UserFacadeTest {
 
         users.add(user1);
         users.add(user2);
+        users.add(user3);
+
+        when(mockUserDAO.getAllUsers()).thenReturn(users);
+        when(mockUserDAO.getUser("user1")).thenReturn(user1);
+        when(mockUserDAO.getUser("user2")).thenReturn(user2);
 
 
-        when(mockUserDao.getAllUsers()).thenReturn(users);
-        when(mockUserDao.getUser("user1")).thenReturn(user1);
-        when(mockUserDao.getUser("user2")).thenReturn(user2);
-
-
-<<<<<<< HEAD
-        testUserFacade = new UserFacade(mockUserDao);
-=======
         testUserFacade = new UserFacade(mockUserDAO);
-        cookieManager = new CookieManager(mockUserDAO);
->>>>>>> cookie manager, userdao is singleton, getalluser returns list<String>, get user returns userinfo, changed some things in userAPI to match that
+        mockCookieManager = new CookieManager(mockUserDAO);
+        doThrow(new UserNotFoundException("User Not Found")).when(mockUserDAO).getUser("badUser");
+
+
+        when(mockCookieManager.makeUserCookie("user1")).thenReturn("GOODCOOKIE");
+        when(mockCookieManager.validateUserCookie("GOODCOOKIE")).thenReturn(true);
+        doThrow(new InvalidUserCookieException("Invalid User Cookie")).when(mockCookieManager).validateUserCookie("BADCOOKIE");
+
+
+        testUserFacade = new UserFacade(mockUserDAO, mockCookieManager);
+
     }
 
     @Test
-    public void shouldMakeMatchingHash() throws UserNotFoundException, NoSuchAlgorithmException{
-        String user1Cookie = cookieManager.makeUserCookie("user1");
-        String user1Cookie2 = cookieManager.makeUserCookie("user1");
-        assertEquals(user1Cookie, user1Cookie2);
+    public void getAllUsers(){
+        testUserFacade.getAllUsers();
+        assertEquals(testUserFacade.getAllUsers(), new ArrayList<>(Arrays.asList("user1", "user2", "user3")));
     }
 
     @Test
-    public void shouldMakeNonMatchingHash() throws UserNotFoundException, NoSuchAlgorithmException{
-        String user1Cookie = cookieManager.makeUserCookie("user1");
-        String user2Cookie = cookieManager.makeUserCookie("user2");
-        assertNotEquals(user1Cookie, user2Cookie);
+    public void getGoodUser() throws UserNotFoundException, InvalidUserCookieException {
+        String user1Cookie = "GOODCOOKIE";
+        UserInfo userInfo = testUserFacade.getUser("user1", user1Cookie);
+        assertEquals(userInfo, new UserInfo("user1", "email1"));
     }
+
+    @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Not Found.*")
+    public void getBadUserGoodCookie() throws InvalidUserCookieException, UserNotFoundException {
+        UserInfo userInfo = testUserFacade.getUser("badUser", "GOODCOOKIE");
+    }
+
+    @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Invalid User Cookie.*")
+    public void getGoodUserBadCookie() throws InvalidUserCookieException, UserNotFoundException {
+        UserInfo userInfo = testUserFacade.getUser("user1", "BADCOOKIE");
+    }
+
+
 
     @Test
     public void shouldLogin() throws UserNotFoundException, InvalidPasswordException, NoSuchAlgorithmException, InvalidUserCookieException {
@@ -86,8 +108,9 @@ public class UserFacadeTest {
 
     @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Not Found.*")
     public void noSuchUserLogin() throws UserNotFoundException, NoSuchAlgorithmException, InvalidPasswordException {
-        doThrow(new UserNotFoundException("User Not Found")).when(mockUserDao).getUser("fakeUser");
+        doThrow(new UserNotFoundException("User Not Found")).when(mockUserDAO).getUser("fakeUser");
         testUserFacade.login("fakeUser","fakePassword");
+
     }
 
     @Test (expectedExceptions = InvalidPasswordException.class, expectedExceptionsMessageRegExp = ".*Invalid Password.*")

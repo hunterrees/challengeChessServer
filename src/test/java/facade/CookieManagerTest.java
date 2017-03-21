@@ -4,6 +4,7 @@ package facade;
 import dao.UserDAO;
 
 
+import exception.user.InvalidUserCookieException;
 import exception.user.UserException;
 import exception.user.UserNotFoundException;
 import model.User;
@@ -72,6 +73,29 @@ public class CookieManagerTest {
         assertNotEquals(user1Cookie, user2Cookie);
     }
 
+    @Test
+    public void shouldValidateCookie() throws UserNotFoundException, InvalidUserCookieException {
+        String user1Cookie = testCookieManager.makeUserCookie("user1");
+        assertTrue(testCookieManager.validateUserCookie(user1Cookie));
+    }
+
+    @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Invalid User Cookie.*")
+    public void shouldNotValidateCookieGoodUserName() throws InvalidUserCookieException, UserNotFoundException {
+        String user1Cookie = testCookieManager.makeUserCookie("user1");
+        user1Cookie += "badStuff";
+        testCookieManager.validateUserCookie(user1Cookie);
+    }
+
+    @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Not Found.*")
+    public void shouldNotValidateCookieBadUserName() throws InvalidUserCookieException, UserNotFoundException {
+        doThrow(new UserNotFoundException("User Not Found")).when(mockUserDAO).getUser("user5");
+        testCookieManager.validateUserCookie("user5:blahblahblah");
+    }
+
+    @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Invalid User Cookie.*")
+    public void shouldNotValidateCookieBadUserNameNoColon() throws InvalidUserCookieException, UserNotFoundException {
+        testCookieManager.validateUserCookie("user5blahblahblah");
+    }
 
 
 }

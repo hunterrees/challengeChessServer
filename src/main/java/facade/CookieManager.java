@@ -1,11 +1,9 @@
 package facade;
 
-import dao.UserDAO;
-
+import dao.UserDao;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserNotFoundException;
 import model.User;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +16,11 @@ import java.security.NoSuchAlgorithmException;
 public class CookieManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CookieManager.class);
-    private UserDAO userDao;
+    private UserDao userDao;
     public CookieManager(){
-        userDao = UserDAO.getInstance();
+        userDao = UserDao.getInstance();
     }
-    public CookieManager(UserDAO userDao){
+    public CookieManager(UserDao userDao){
         this.userDao = userDao;
     }
 
@@ -56,15 +54,21 @@ public class CookieManager {
 
     public boolean validateUserCookie(String cookie) throws UserNotFoundException, InvalidUserCookieException {
         //TODO: check cookie for valid user
-        String cookieUserName = StringUtils.substringBefore(cookie, ":");
+        int indexOfColon = cookie.indexOf(':');
+        if(indexOfColon == -1){
+            throw new InvalidUserCookieException("Invalid User Cookie");
+        }
+        String cookieUserName = cookie.substring(0, indexOfColon);
         String tempCookie;
 
         tempCookie = makeUserCookie(cookieUserName);
-        if(tempCookie == cookie){
+        if(tempCookie.equals(cookie)){
             return true;
         }else {
             throw new InvalidUserCookieException("Invalid User Cookie");
         }
     }
+
+
 
 }
