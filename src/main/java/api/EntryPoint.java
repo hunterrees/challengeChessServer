@@ -67,7 +67,7 @@ public class EntryPoint {
       privateExponents.put(username, s);
     }
     BigInteger publicParam = modExp(params.getG(), privateExponents.get(username), params.getP());
-    LOGGER.info("Sending public parameter {] to {]", publicParam, username);
+    LOGGER.info("Sending public parameter {} to {}", publicParam, username);
     return new DHParams(params, publicParam.toByteArray());
   }
 
