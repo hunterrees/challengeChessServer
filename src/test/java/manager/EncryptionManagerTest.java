@@ -63,7 +63,8 @@ public class EncryptionManagerTest {
     testModel.generateSharedKey("test2", new DHParams(params, new byte[2]));
   }
 
-  @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*does not have a shared.*")
+  @Test (expectedExceptions = UserNotFoundException.class,
+          expectedExceptionsMessageRegExp = ".*User test2 does not have a shared key.*")
   public void shouldThrowExceptionWhenAttemptingToDecodePasswordWithoutSharedKey() throws UserNotFoundException {
     testModel.decryptPassword("test2", "password".getBytes());
   }

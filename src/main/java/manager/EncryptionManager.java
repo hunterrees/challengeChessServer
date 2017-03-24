@@ -11,6 +11,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.DHParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
@@ -115,11 +116,10 @@ public class EncryptionManager {
       SecretKeySpec key = new SecretKeySpec(sharedKeys.get(username), ENCRYPTION_ALGORITHM);
       cipher.init(Cipher.DECRYPT_MODE, key, parameterSpec);
       return new String(cipher.doFinal(password), "UTF-8");
-    } catch (Exception e) {
+    } catch (RuntimeException | GeneralSecurityException | UnsupportedEncodingException e) {
       LOGGER.error("Something went wrong during decryption of a password");
       throw new ServerException(e);
     }
-
   }
 
   BigInteger modExp(BigInteger x, BigInteger y, BigInteger n) {
