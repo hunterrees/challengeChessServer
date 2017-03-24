@@ -1,6 +1,7 @@
 package manager;
 
 import exception.ServerException;
+
 import exception.user.UserNotFoundException;
 import model.DHParams;
 import org.slf4j.Logger;
@@ -118,6 +119,7 @@ public class EncryptionManager {
       LOGGER.error("Something went wrong during decryption of a password");
       throw new ServerException(e);
     }
+
   }
 
   BigInteger modExp(BigInteger x, BigInteger y, BigInteger n) {

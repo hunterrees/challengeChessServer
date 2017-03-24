@@ -85,6 +85,7 @@ public class EncryptionManagerTest {
 
   private byte[] generateSharedKey() throws UserNotFoundException {
     DHParams result = testModel.getPublicParameters("test1");
+    
     BigInteger a = BigInteger.probablePrime(500, new SecureRandom());
     BigInteger publicKey = testModel.modExp(result.getParams().getG(), a, result.getParams().getP());
 

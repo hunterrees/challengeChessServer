@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.Socket;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,6 +73,7 @@ public class EntryPoint {
     try {
       LOGGER.info("/crypt/end/{username} POST hit with username {} and parameters {}", username, parameters);
       encryptionManager.generateSharedKey(username, parameters);
+
     } catch (RuntimeException e) {
       LOGGER.error("Error in /crypt/end/{username} POST {}", e);
       throw new ServerException(e);
