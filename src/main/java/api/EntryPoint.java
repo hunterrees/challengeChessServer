@@ -12,9 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.NoSuchPaddingException;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class EntryPoint {
   static Map<String, Socket> sockets;
   private EncryptionManager encryptionManager;
 
-  public EntryPoint() throws NoSuchAlgorithmException, NoSuchPaddingException {
+  public EntryPoint() {
     sockets = new HashMap<>();
     encryptionManager = EncryptionManager.getInstance();
   }
@@ -55,7 +54,7 @@ public class EntryPoint {
   DHParams sendParameters(@PathVariable String username) {
     try {
       LOGGER.info("/crypt/init/{username} GET hit with username {}", username);
-      return encryptionManager.getParameters(username);
+      return encryptionManager.getPublicParameters(username);
     } catch (RuntimeException e) {
       LOGGER.error("Error in /crypt/init/{username} GET {}", e);
       throw new ServerException(e);
@@ -73,7 +72,8 @@ public class EntryPoint {
   void setUpSharedKey(@PathVariable String username, @RequestBody DHParams parameters) throws UserNotFoundException {
     try {
       LOGGER.info("/crypt/end/{username} POST hit with username {} and parameters {}", username, parameters);
-      encryptionManager.setUpSharedKey(username, parameters);
+      encryptionManager.generateSharedKey(username, parameters);
+
     } catch (RuntimeException e) {
       LOGGER.error("Error in /crypt/end/{username} POST {}", e);
       throw new ServerException(e);
