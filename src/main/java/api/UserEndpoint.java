@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import static api.EntryPoint.USER_COOKIE;
+
 @RestController
 @EnableAutoConfiguration
 @RequestMapping ("users")
 class UserEndpoint {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserEndpoint.class);
-
-  private final static String USER_COOKIE = "userCookie";
 
   private UserFacade userFacade;
 

@@ -26,6 +26,9 @@ public class EntryPoint {
   static Map<String, Socket> sockets;
   private EncryptionManager encryptionManager;
 
+  final static String USER_COOKIE = "userCookie";
+  final static String GAME_COOKIE = "gameCookie";
+
   public EntryPoint() {
     sockets = new HashMap<>();
     encryptionManager = EncryptionManager.getInstance();
