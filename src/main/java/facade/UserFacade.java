@@ -74,19 +74,20 @@ public class UserFacade {
      * @return User cookie.
      * @throws UserException if that username is already taken or if the username has a ':' in it
      */
-    public String register(User basicUser){
+    public String register(User basicUser) throws UserException {
 
         LOGGER.info("UserFacade.register");
-        try {
-            userDao.getUser(basicUser.getUsername());
-            //TODO: throw new UserNotFoundException(); //User was already in the database
-
-        } catch (UserNotFoundException e) {
+        if(basicUser.getUsername() == null || basicUser.getPassword() == null || basicUser.getEmail() == null){
+            throw new UserException("User info not initialized");
+        }
+        if(!userDao.hasUser(basicUser.getUsername())){
             basicUser.setOnline();
             userDao.addUser(basicUser);
+        }else {
+           throw new UserException("User already exists");
         }
-        //TODO: create user cookie
-        return null;
+
+        return cookieManager.makeUserCookie(basicUser.getUsername());
     }
 
     /**
