@@ -4,18 +4,14 @@ package api;
 import exception.ServerException;
 import exception.user.UserNotFoundException;
 import manager.EncryptionManager;
+import manager.ClientConnectionManager;
 import model.DHParams;
-import model.SocketInfo;
+import model.ConnectionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.Socket;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @EnableAutoConfiguration
@@ -23,24 +19,47 @@ public class EntryPoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EntryPoint.class);
 
-  static Map<String, Socket> sockets;
+  private ClientConnectionManager clientConnectionManager;
   private EncryptionManager encryptionManager;
 
+  final static String USER_COOKIE = "userCookie";
+  final static String GAME_COOKIE = "gameCookie";
+
+  /**
+   * Default constructor.
+   */
   public EntryPoint() {
-    sockets = new HashMap<>();
+    clientConnectionManager = ClientConnectionManager.getInstance();
     encryptionManager = EncryptionManager.getInstance();
   }
 
   /**
-   * Sets up a socket with the given user.
-   * This socket will be used to notify the user of created games or moves.
+   * Constructor for unit testing.
    *
-   * @param username non-null string of the user who is asking for a socket.
-   * @param socketInfo Host and port of the client's socket.
+   * @param clientConnectionManager ClientConnectionManager to use.
+   * @param encryptionManager EncryptionManager to use.
    */
-  @RequestMapping (value="socket/{username}", method=RequestMethod.POST)
-  void setUpSocket(@PathVariable String username, @RequestBody SocketInfo socketInfo) {
-    LOGGER.info("Socket endpoint hit by {} with {}", username, socketInfo);
+  EntryPoint(ClientConnectionManager clientConnectionManager, EncryptionManager encryptionManager) {
+    this.clientConnectionManager = clientConnectionManager;
+    this.encryptionManager = encryptionManager;
+  }
+
+  /**
+   * Sets up a connection with the given user.
+   * This connection will be used to notify the user of created games or moves.
+   *
+   * @param username non-null string of the user who is asking for a connection.
+   * @param connectionInfo Host and port of the client.
+   */
+  @RequestMapping (value="connection/{username}", method=RequestMethod.POST)
+  void setUpConnection(@PathVariable String username, @RequestBody ConnectionInfo connectionInfo) {
+    try {
+      LOGGER.info("/connection/{username} POST hit by {} with {}", username, connectionInfo);
+      clientConnectionManager.setUpConnection(username, connectionInfo);
+    } catch(RuntimeException e) {
+      LOGGER.error("Error in /connection/{username} POST {}", e);
+      throw new ServerException(e);
+    }
   }
 
   /**

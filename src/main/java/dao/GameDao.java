@@ -16,10 +16,19 @@ public class GameDao {
 
   private List<Game> games;
 
-  public GameDao() {
+  private static GameDao instance;
+
+  GameDao() {
     games = new ArrayList<>();
   }
 
+  public static GameDao getInstance() {
+    if (instance == null) {
+      instance = new GameDao();
+    }
+    return instance;
+  }
+  
   /**
    * Gets all games that a player has played in (regardless of status).
    *

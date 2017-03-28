@@ -21,6 +21,7 @@ public class GameFacade {
   private GameDao gameDao;
   private Queue<String> userQueue;
 
+
   /**
    * Default Constructor.
    */
