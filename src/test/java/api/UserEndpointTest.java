@@ -25,6 +25,7 @@ public class UserEndpointTest {
   private UserFacade mockUserFacade;
 
   private List<User> users;
+  private List<String> usernames;
   private User user1;
   private User user2;
   private User user3;
@@ -38,16 +39,19 @@ public class UserEndpointTest {
   public void setUp() throws UserException {
     MockitoAnnotations.initMocks(this);
     users = new ArrayList<>();
+    usernames = new ArrayList<>();
     user1 = new User("user1", "password1", "email1");
     user2 = new User("user2", "password2", "email2");
     user3 = new User("user3", "password3", "email3");
 
     users.add(user1);
     users.add(user2);
+    usernames.add(user1.getUsername());
+    usernames.add(user2.getUsername());
 
-    when(mockUserFacade.getAllUsers()).thenReturn(users);
-    when(mockUserFacade.getUser("user1", VALID_COOKIE)).thenReturn(user1);
-    when(mockUserFacade.getUser("user2", VALID_COOKIE)).thenReturn(user2);
+    when(mockUserFacade.getAllUsers()).thenReturn(usernames);
+    when(mockUserFacade.getUser("user1", VALID_COOKIE)).thenReturn(new UserInfo(user1));
+    when(mockUserFacade.getUser("user2", VALID_COOKIE)).thenReturn(new UserInfo(user2));
     doThrow(new InvalidUserCookieException("Invalid Cookie")).when(mockUserFacade).getUser(anyString(), eq(INVALID_COOKIE));
     doThrow(new InvalidUserCookieException("Invalid Cookie")).when(mockUserFacade).logout(anyString(), eq(INVALID_COOKIE));
     doThrow(new InvalidUserCookieException("Invalid Cookie")).when(mockUserFacade).updateUser(any(), eq(INVALID_COOKIE));
@@ -57,8 +61,8 @@ public class UserEndpointTest {
 
   @Test
   public void shouldGetAllUsers() {
-    List<User> result = testModel.getAllUsers();
-    assertEquals(result, users);
+    List<String> result = testModel.getAllUsers();
+    assertEquals(result, usernames);
   }
 
   @Test
