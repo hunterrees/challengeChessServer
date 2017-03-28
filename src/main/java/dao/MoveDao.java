@@ -14,8 +14,17 @@ public class MoveDao {
 
   private List<List<Move>> games;
 
-  public MoveDao() {
+  private static MoveDao instance;
+
+  MoveDao() {
     games = new ArrayList<>();
+  }
+
+  public static MoveDao getInstance() {
+    if (instance == null) {
+      instance = new MoveDao();
+    }
+    return instance;
   }
 
   /**

@@ -1,6 +1,6 @@
 package facade;
 
-import dao.GameDAO;
+import dao.GameDao;
 import dao.UserDAO;
 import exception.game.GameException;
 import exception.user.InvalidUserCookieException;
@@ -21,7 +21,7 @@ import static org.testng.Assert.*;
 public class GameFacadeTest {
 
   @Mock
-  private GameDAO mockGameDao;
+  private GameDao mockGameDao;
   @Mock
   private UserDAO mockUserDao;
 

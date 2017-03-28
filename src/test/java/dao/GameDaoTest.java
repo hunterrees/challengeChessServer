@@ -11,15 +11,15 @@ import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
-public class GameDAOTest {
+public class GameDaoTest {
 
   private Game game;
 
-  private GameDAO testModel;
+  private GameDao testModel;
 
   @BeforeMethod
   public void setUp() {
-    testModel = new GameDAO();
+    testModel = new GameDao();
     game = new Game(0, "player1", "player2", GameStatus.PLAYING);
   }
 

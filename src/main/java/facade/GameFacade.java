@@ -1,6 +1,6 @@
 package facade;
 
-import dao.GameDAO;
+import dao.GameDao;
 import dao.UserDAO;
 import exception.game.GameException;
 import exception.game.GameNotFoundException;
@@ -17,25 +17,25 @@ public class GameFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GameFacade.class);
 
-  private GameDAO gameDAO;
+  private GameDao gameDao;
   private UserDAO userDAO;
 
   /**
    * Default Constructor.
    */
   public GameFacade() {
-    gameDAO = new GameDAO();
+    gameDao = GameDao.getInstance();
     userDAO = new UserDAO();
   }
 
   /**
    * Constructor for unit testing.
    *
-   * @param gameDAO GameDAO to access game data.
+   * @param gameDao GameDao to access game data.
    * @param userDAO UserDAO to access user data.
    */
-  public GameFacade(GameDAO gameDAO, UserDAO userDAO) {
-    this.gameDAO = gameDAO;
+  public GameFacade(GameDao gameDao, UserDAO userDAO) {
+    this.gameDao = gameDao;
     this.userDAO = userDAO;
   }
 
@@ -47,7 +47,7 @@ public class GameFacade {
    */
   public List<Game> getUserGames(String username) {
     LOGGER.info("Getting all games for user {}", username);
-    return gameDAO.getUserGames(username);
+    return gameDao.getUserGames(username);
   }
 
   /**
@@ -63,7 +63,7 @@ public class GameFacade {
           throws InvalidUserCookieException, GameNotFoundException {
     LOGGER.info("Getting game {} for user {}", gameId, username);
     validateCookie(username, userCookie);
-    return gameDAO.getGame(gameId);
+    return gameDao.getGame(gameId);
   }
 
   /**
@@ -80,7 +80,7 @@ public class GameFacade {
           throws InvalidUserCookieException, GameException {
     LOGGER.info("Creating game between {} and {}", player1, player2);
     validateCookie(player1, userCookie);
-    return gameDAO.createGame(player1, player2);
+    return gameDao.createGame(player1, player2);
   }
 
   /**
