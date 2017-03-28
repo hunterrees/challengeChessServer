@@ -2,11 +2,11 @@ package facade;
 
 
 import dao.UserDao;
-
 import exception.user.InvalidPasswordException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserException;
 import exception.user.UserNotFoundException;
+import manager.CookieManager;
 import model.User;
 import model.UserInfo;
 import org.mockito.Mock;
@@ -19,12 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
 
 public class UserFacadeTest {
@@ -63,28 +59,18 @@ public class UserFacadeTest {
         when(mockUserDAO.getUser("user1")).thenReturn(user1);
         when(mockUserDAO.getUser("user2")).thenReturn(user2);
 
-
-        testUserFacade = new UserFacade(mockUserDAO);
-        mockCookieManager = new CookieManager(mockUserDAO);
+        testUserFacade = new UserFacade(mockUserDAO, mockCookieManager);
         doThrow(new UserNotFoundException("User Not Found")).when(mockUserDAO).getUser("badUser");
         when(mockUserDAO.hasUser("newUser")).thenReturn(false);
         when(mockUserDAO.hasUser("oldUser")).thenReturn(true);
-
-
-
-
 
         when(mockCookieManager.makeUserCookie("user1")).thenReturn("GOODCOOKIE");
         when(mockCookieManager.validateUserCookie("GOODCOOKIE")).thenReturn(true);
         doThrow(new InvalidUserCookieException("Invalid User Cookie")).when(mockCookieManager).validateUserCookie("BADCOOKIE");
 
-
         when(mockCookieManager.makeUserCookie("newUser")).thenReturn("GOODCOOKIE");
 
-
-
         testUserFacade = new UserFacade(mockUserDAO, mockCookieManager);
-
     }
 
     //getAllUsers

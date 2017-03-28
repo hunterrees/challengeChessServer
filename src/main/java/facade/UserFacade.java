@@ -6,6 +6,7 @@ import exception.user.InvalidPasswordException;
 import exception.user.UserException;
 import exception.user.UserNotFoundException;
 
+import manager.CookieManager;
 import model.User;
 import model.UserInfo;
 import org.slf4j.Logger;
@@ -26,11 +27,8 @@ public class UserFacade {
         userDao = UserDao.getInstance();
         cookieManager = new CookieManager();
     }
-    public UserFacade(UserDao userDao){
-        this.userDao = userDao;
-        cookieManager = new CookieManager();
-    }
-    public UserFacade(UserDao userDAO, CookieManager cookieManager){
+
+    UserFacade(UserDao userDAO, CookieManager cookieManager){
         this.userDao = userDAO;
         this.cookieManager = cookieManager;
     }

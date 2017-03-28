@@ -1,4 +1,4 @@
-package facade;
+package manager;
 
 import dao.UserDao;
 import exception.user.InvalidUserCookieException;

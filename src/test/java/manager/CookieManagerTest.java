@@ -1,30 +1,23 @@
-package facade;
+package manager;
 
 
-import dao.UserDAO;
-
-
+import dao.UserDao;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserException;
 import exception.user.UserNotFoundException;
+import manager.CookieManager;
 import model.User;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotEquals;
-import static org.testng.Assert.assertTrue;
-
-
-import static org.mockito.Mockito.when;
+import static org.testng.Assert.*;
 
 
 public class CookieManagerTest {
@@ -37,7 +30,7 @@ public class CookieManagerTest {
     private User user3;
 
     @Mock
-    private UserDAO mockUserDAO;
+    private UserDao mockUserDAO;
 
     @BeforeMethod
     public void setUp() throws UserException {
