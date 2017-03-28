@@ -26,7 +26,7 @@ public class GameFacade {
    * Default Constructor.
    */
   public GameFacade() {
-    gameDao = new GameDao();
+    gameDao = GameDao.getInstance();
     userQueue = new LinkedList<>();
   }
 

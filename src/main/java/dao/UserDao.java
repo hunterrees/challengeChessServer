@@ -17,7 +17,7 @@ public class UserDao {
   private Map<String, User> users;
   private static UserDao userDAO = null;
 
-  private UserDao() {
+  UserDao() {
     users = new HashMap<>();
   }
 
