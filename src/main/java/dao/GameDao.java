@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameDAO {
+public class GameDao {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GameDAO.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GameDao.class);
 
   private List<Game> games;
 
-  public GameDAO() {
+  public GameDao() {
     games = new ArrayList<>();
   }
 

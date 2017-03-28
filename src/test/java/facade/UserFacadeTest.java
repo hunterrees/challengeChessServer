@@ -1,7 +1,7 @@
 package facade;
 
 
-import dao.UserDAO;
+import dao.UserDao;
 
 import exception.user.InvalidPasswordException;
 import exception.user.InvalidUserCookieException;
@@ -33,7 +33,7 @@ public class UserFacadeTest {
     private User user3;
 
     @Mock
-    private UserDAO mockUserDAO;
+    private UserDao mockUserDao;
 
     @BeforeMethod
     public void setUp() throws UserException {
@@ -47,12 +47,12 @@ public class UserFacadeTest {
         users.add(user2);
 
 
-        when(mockUserDAO.getAllUsers()).thenReturn(users);
-        when(mockUserDAO.getUser("user1")).thenReturn(user1);
-        when(mockUserDAO.getUser("user2")).thenReturn(user2);
+        when(mockUserDao.getAllUsers()).thenReturn(users);
+        when(mockUserDao.getUser("user1")).thenReturn(user1);
+        when(mockUserDao.getUser("user2")).thenReturn(user2);
 
 
-        testUserFacade = new UserFacade(mockUserDAO);
+        testUserFacade = new UserFacade(mockUserDao);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class UserFacadeTest {
 
     @Test (expectedExceptions = UserNotFoundException.class, expectedExceptionsMessageRegExp = ".*User Not Found.*")
     public void noSuchUserLogin() throws UserNotFoundException, NoSuchAlgorithmException, InvalidPasswordException {
-        doThrow(new UserNotFoundException("User Not Found")).when(mockUserDAO).getUser("fakeUser");
+        doThrow(new UserNotFoundException("User Not Found")).when(mockUserDao).getUser("fakeUser");
         testUserFacade.login("fakeUser","fakePassword");
     }
 

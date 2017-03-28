@@ -10,17 +10,17 @@ import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
-public class UserDAOTest {
+public class UserDaoTest {
 
   private List<User> users;
   private User user1;
   private User user2;
 
-  private UserDAO testModel;
+  private UserDao testModel;
 
   @BeforeMethod
   public void setUp() {
-    testModel = new UserDAO();
+    testModel = new UserDao();
     users = new ArrayList<>();
     user1 = new User("user1", "password1", "email1");
     user2 = new User("user2", "password2", "email2");
