@@ -10,17 +10,21 @@ import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
-public class UserDAOTest {
+public class UserDaoTest {
 
   private List<User> users;
   private User user1;
   private User user2;
 
-  private UserDAO testModel;
+  private UserDao testModel;
 
   @BeforeMethod
   public void setUp() {
-    testModel = new UserDAO();
+<<<<<<< HEAD:src/test/java/dao/UserDaoTest.java
+    testModel = new UserDao();
+=======
+    testModel = UserDAO.getInstance();
+>>>>>>> cookie manager, userdao is singleton, getalluser returns list<String>, get user returns userinfo, changed some things in userAPI to match that:src/test/java/dao/UserDAOTest.java
     users = new ArrayList<>();
     user1 = new User("user1", "password1", "email1");
     user2 = new User("user2", "password2", "email2");

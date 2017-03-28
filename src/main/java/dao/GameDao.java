@@ -28,7 +28,7 @@ public class GameDao {
     }
     return instance;
   }
-
+  
   /**
    * Gets all games that a player has played in (regardless of status).
    *

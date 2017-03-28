@@ -1,52 +1,55 @@
 package facade;
 
 import dao.GameDao;
-import dao.UserDAO;
 import exception.game.GameException;
 import exception.game.GameNotFoundException;
 import exception.user.InvalidUserCookieException;
 import model.Game;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import java.util.Queue;
 
 public class GameFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GameFacade.class);
 
+  public static final String MACHINE_AI_USERNAME = "pamela";
+
   private GameDao gameDao;
-  private UserDAO userDAO;
+  private Queue<String> userQueue;
+
 
   /**
    * Default Constructor.
    */
   public GameFacade() {
-    gameDao = GameDao.getInstance();
-    userDAO = new UserDAO();
+    gameDao = new GameDao();
+    userQueue = new LinkedList<>();
   }
 
   /**
    * Constructor for unit testing.
    *
    * @param gameDao GameDao to access game data.
-   * @param userDAO UserDAO to access user data.
    */
-  public GameFacade(GameDao gameDao, UserDAO userDAO) {
+  public GameFacade(GameDao gameDao) {
     this.gameDao = gameDao;
-    this.userDAO = userDAO;
+    userQueue = new LinkedList<>();
   }
 
   /**
    * Returns all games a user has played in.
    *
    * @param username non-null string which is the player's username
+   * @param userCookie Cookie of the user requesting the games.
    * @return List of games the user has played in.
    */
-  public List<Game> getUserGames(String username) {
+  public List<Game> getUserGames(String username, String userCookie) {
     LOGGER.info("Getting all games for user {}", username);
+    //TODO: Refactor so cookies are handled by CookieManager class
     return gameDao.getUserGames(username);
   }
 
@@ -62,43 +65,46 @@ public class GameFacade {
   public Game getGame(int gameId, String username, String userCookie)
           throws InvalidUserCookieException, GameNotFoundException {
     LOGGER.info("Getting game {} for user {}", gameId, username);
-    validateCookie(username, userCookie);
+    //TODO: Refactor so cookies are handled by CookieManager class
     return gameDao.getGame(gameId);
   }
 
   /**
    * Creates a game with the two specified players.
+   * Game object (and game cookie) is sent to both players via socket.
    *
    * @param player1 non-null string of first player to play in game.
    * @param player2 non-null string of second player to play in game.
    * @param userCookie Cookie of the user attempting to create the game.
-   * @return Created game.
    * @throws InvalidUserCookieException if user cookie is invalid.
    * @throws GameException if game has the same player twice.
    */
-  public Game createGame(String player1, String player2, String userCookie)
+  public void createGame(String player1, String player2, String userCookie)
           throws InvalidUserCookieException, GameException {
     LOGGER.info("Creating game between {} and {}", player1, player2);
-    validateCookie(player1, userCookie);
-    return gameDao.createGame(player1, player2);
+    //TODO: Refactor so cookies are handled by CookieManager class
+    gameDao.createGame(player1, player2);
+    //TODO: Send game and cookie on socket to both players (may have to refactor method signature)
   }
 
   /**
-   * Creates a game with another random user.
+   * Creates a game with another user.
+   * If no other user is currently waiting for a game, user is added to the queue.
    *
    * @param username Player requesting to create a new game.
    * @param userCookie Cookie of the user attempting to create the game.
-   * @return Created game.
    * @throws InvalidUserCookieException if user cookie is invalid.
    */
-  public Game createRandomGame(String username, String userCookie) throws InvalidUserCookieException, GameException {
+  public void createRandomGame(String username, String userCookie) throws InvalidUserCookieException, GameException {
     LOGGER.info("Creating random game for {}", username);
-    List<User> users = userDAO.getAllUsers();
-    String player2 = username;
-    while (player2.equals(username) || player2.equals("pamela")) {
-      player2 = users.get(new Random().nextInt(users.size())).getUsername();
+    //TODO: Refactor so cookies are handled by CookieManager class
+    if (!userQueue.isEmpty()) {
+      String player2 = userQueue.poll();
+      createGame(username, player2, userCookie);
     }
-    return createGame(username, player2, userCookie);
+    else {
+      userQueue.add(username);
+    }
   }
 
   /**
@@ -106,23 +112,13 @@ public class GameFacade {
    *
    * @param username Player requesting to create a new game.
    * @param userCookie Cookie of the user attempting to create the game.
-   * @return Created game.
+   *
    * @throws InvalidUserCookieException if user cookie is invalid.
    */
-  public Game createMachineLearningGame(String username, String userCookie)
+  public void createMachineLearningGame(String username, String userCookie)
           throws InvalidUserCookieException, GameException {
     LOGGER.info("Creating game for {} with pamela", username);
-    return createGame(username, "pamela", userCookie);
-  }
-
-  /**
-   * Checks the user cookie.
-   *
-   * @param username non-null string of the user.
-   * @param userCookie non-null string of the user's cookie.
-   * @throws InvalidUserCookieException if user cookie is invalid.
-   */
-  private void validateCookie(String username, String userCookie) throws InvalidUserCookieException {
-
+    //TODO: Refactor so cookies are handled by CookieManager class
+    createGame(username, MACHINE_AI_USERNAME, userCookie);
   }
 }

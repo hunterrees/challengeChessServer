@@ -1,6 +1,7 @@
 package api;
 
 import exception.ServerException;
+import exception.user.UserAlreadyExistsException;
 import exception.user.UserException;
 import facade.UserFacade;
 import model.User;
@@ -43,12 +44,13 @@ class UserEndpoint {
   /**
    * Gets all users.
    *
-   * @return List<User> of all users on the server.
+   * @return List<String> of all users on the server.
    * @throws ServerException when an unexpected error occurs.
    */
-  @RequestMapping(method=RequestMethod.GET)
-  List<User> getAllUsers() throws ServerException {
-    List<User> result;
+
+  @RequestMapping(method = RequestMethod.GET)
+  List<String> getAllUsers() throws ServerException {
+    List<String> result;
     try {
       LOGGER.info("/users GET hit");
       result = userFacade.getAllUsers();
@@ -65,7 +67,7 @@ class UserEndpoint {
    * If cookie is invalid (Status Code 403).
    *
    * @param username non-null String with the name of user to retrieve.
-   * @return User that was requested.
+   * @return UserInfo of the user that was requested.
    * @throws UserException when user cookie is not valid or user is not found.
    * @throws ServerException when an unexpected error occurs.
    */
@@ -75,8 +77,7 @@ class UserEndpoint {
     UserInfo result;
     try {
       LOGGER.info("/users/{username} GET hit with username {} and cookie {}", username, cookie);
-      User user = userFacade.getUser(username, cookie);
-      result = new UserInfo(user);
+      result = userFacade.getUser(username, cookie);
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/{username} GET {}", e);
       throw new ServerException(e);
@@ -86,31 +87,32 @@ class UserEndpoint {
 
   /**
    * Registers the user on the server.
-   * If successful, returns the created user (Status Code 201).
+   * If successful, returns the userCookie of the created user (Status Code 201).
    *
    * @param user non-null User with the information of the user to add to system.
-   * @return User that was created.
+   * @return userCookie of the user that was created.
    * @throws ServerException when an unexpected error occurs.
+   * @throws UserAlreadyExistsException if the user already existed.
    */
   @RequestMapping(value="{username}", method=RequestMethod.POST)
   @ResponseStatus(HttpStatus.CREATED)
-  String register(@RequestBody User user) throws ServerException {
-    String result;
+  String register(@RequestBody User user) throws ServerException, UserException {
+    String userCookie;
     try {
       LOGGER.info("/users/{username} POST hit with user {}", user);
-      result = userFacade.register(user);
+      userCookie = userFacade.register(user);
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/{username} POST {}", e);
       throw new ServerException(e);
     }
-    return result;
+    return userCookie;
   }
 
   /**
    * Updates the users information on the server.
    * If successful (Status Code 200).
    * If the user doesn't exist (Status Code 404).
-   * If cookie is invalid (Status Cod 403).
+   * If cookie is invalid (Status Code 403).
    *
    * @param user non-null User with the information of the user to update.
    * @throws UserException when user cookie is not valid or user is not found.
@@ -130,33 +132,33 @@ class UserEndpoint {
 
   /**
    * Logs in the user specified.
-   * If successful, returns the logged-in user (Status Code 200).
+   * If successful, returns the userCookie for logged-in user (Status Code 200).
    * If password don't match, returns null (Status Code 400).
    * If user doesn't exist, returns null (Status Code 404).
    *
    * @param username non-null String with the name of user to login.
-   * @return User that was logged-in.
+   * @return userCookie for user that was logged-in.
    * @throws UserException when user is not found.
    * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="login/{username}", method=RequestMethod.PUT)
   String login(@PathVariable String username, @RequestBody User user) throws UserException, ServerException, NoSuchAlgorithmException {
-    String result;
+    String userCookie;
     try {
       LOGGER.info("/users/login/{username} PUT hit with username {} and user {}", username, user);
-      result = userFacade.login(username, user.getPassword());
+      userCookie = userFacade.login(username, user.getPassword());
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/login/{username} PUT {}", e);
       throw new ServerException(e);
     }
-    return result;
+    return userCookie;
   }
 
   /**
    * Logs out the user specified.
    * If successful (Status Code 200).
    * If user doesn't exist (Status Code 404).
-   * If cookie is invalid (Status Cod 403).
+   * If cookie is invalid (Status Code 403).
    *
    * @param username non-null String with the name of user to log out.
    * @throws UserException when user cookie is not valid or user is not found.

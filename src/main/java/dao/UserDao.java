@@ -10,14 +10,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserDAO {
+public class UserDao {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserDAO.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
   private Map<String, User> users;
+  private static UserDao userDAO = null;
 
-  public UserDAO() {
+  private UserDao() {
     users = new HashMap<>();
+  }
+
+  public static UserDao getInstance(){
+    if(userDAO == null){
+      userDAO = new UserDao();
+    }
+    return userDAO;
   }
 
   /**
@@ -49,6 +57,12 @@ public class UserDAO {
     return result;
   }
 
+  /**
+   * Checks if the user exists.
+   *
+   * @param username non-null string of user to check for.
+   * @return if the user exists or not.
+   */
   public boolean hasUser(String username) {
     LOGGER.info("Checking if user {} exists", username);
     return users.get(username) != null;
@@ -57,6 +71,8 @@ public class UserDAO {
   /**
    * Adds user to the database in the logged-in position. Username must be unique.
    * Username, password, online, and email fields are initialized; Other fields are 0/null.
+   *
+   * @param user non-null User to be added to the DB.
    */
   public void addUser(User user) {
     LOGGER.info("Adding user: {}", user);
@@ -67,6 +83,7 @@ public class UserDAO {
    * Finds matching user in DB and replaces it with the new User info. User must already exist in the database.
    * User with matching username will be updated but win record won't be affected.
    *
+   * @param user non-null User to be update in the DB.
    * @throws UserNotFoundException if user does not exist.
    */
   public void updateUser(User user) throws UserNotFoundException {
