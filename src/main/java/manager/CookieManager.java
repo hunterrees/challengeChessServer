@@ -1,6 +1,8 @@
 package manager;
 
 import dao.UserDao;
+import exception.game.GameNotFoundException;
+import exception.game.InvalidGameCookieException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserNotFoundException;
 import model.User;
@@ -69,5 +71,13 @@ public class CookieManager {
         }else {
             throw new InvalidUserCookieException("Invalid User Cookie");
         }
+    }
+
+    public String makeGameCookie() {
+      return null;
+    }
+
+    public boolean validateGameCookie(String cookie) throws GameNotFoundException,InvalidGameCookieException {
+      return false;
     }
 }

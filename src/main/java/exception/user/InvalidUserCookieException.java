@@ -3,7 +3,7 @@ package exception.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus (value= HttpStatus.FORBIDDEN, reason="Invalid password")
+@ResponseStatus (value= HttpStatus.FORBIDDEN, reason="Invalid user cookie")
 public class InvalidUserCookieException extends UserException {
   public InvalidUserCookieException() {
   }
