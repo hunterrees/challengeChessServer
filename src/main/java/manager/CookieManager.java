@@ -1,10 +1,12 @@
 package manager;
 
+import dao.GameDao;
 import dao.UserDao;
 import exception.game.GameNotFoundException;
 import exception.game.InvalidGameCookieException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserNotFoundException;
+import model.Game;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +18,24 @@ public class CookieManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CookieManager.class);
     private UserDao userDao;
+    private GameDao gameDao;
 
     private static CookieManager instance;
 
     private CookieManager(){
         userDao = UserDao.getInstance();
+        gameDao = GameDao.getInstance();
     }
 
     CookieManager(UserDao userDao){
         this.userDao = userDao;
+    }
+    CookieManager(GameDao gameDao){
+        this.gameDao = gameDao;
+    }
+    CookieManager(UserDao userDao, GameDao gameDao){
+        this.userDao = userDao;
+        this.gameDao = gameDao;
     }
 
     public static CookieManager getInstance() {
@@ -73,11 +84,25 @@ public class CookieManager {
         }
     }
 
-    public String makeGameCookie() {
-      return null;
+    public String makeGameCookie(int gameID) throws GameNotFoundException {
+        Game game = gameDao.getGame(gameID);
+        String toHash = game.getPlayer1() + game.getPlayer2();
+        String hash = hash(toHash);
+        return gameID + ":" + hash;
     }
 
-    public boolean validateGameCookie(String cookie) throws GameNotFoundException,InvalidGameCookieException {
-      return false;
+    public boolean validateGameCookie(String cookie) throws GameNotFoundException, InvalidGameCookieException {
+        int indexOfColon = cookie.indexOf(':');
+        if(indexOfColon == -1){
+            throw new InvalidGameCookieException("Invalid Game Cookie");
+        }
+        int cookieGameId = Integer.parseInt(cookie.substring(0, indexOfColon));
+        String tempCookie = makeGameCookie(cookieGameId);
+        if(tempCookie.equals(cookie)){
+            return true;
+        }else {
+            throw new InvalidGameCookieException("Invalid Game Cookie");
+        }
+
     }
 }

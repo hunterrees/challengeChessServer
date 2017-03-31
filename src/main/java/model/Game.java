@@ -30,6 +30,8 @@ public class Game {
     this.status = status;
   }
 
+  public int getGameId(){return gameId;}
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

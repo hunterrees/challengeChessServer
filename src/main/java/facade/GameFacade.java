@@ -82,7 +82,7 @@ public class GameFacade {
     clientConnectionManager.sendData(player1, game);
     clientConnectionManager.sendData(player2, game);
 
-    String gameCookie = cookieManager.makeGameCookie();
+    String gameCookie = cookieManager.makeGameCookie(game.getGameId());
     clientConnectionManager.sendData(player1, gameCookie);
     clientConnectionManager.sendData(player2, gameCookie);
   }
