@@ -3,6 +3,9 @@ package facade;
 import dao.GameDao;
 import exception.game.GameException;
 import exception.user.InvalidUserCookieException;
+import exception.user.UserNotFoundException;
+import manager.ClientConnectionManager;
+import manager.CookieManager;
 import model.Game;
 import model.GameStatus;
 import org.mockito.Mock;
@@ -21,6 +24,10 @@ public class GameFacadeTest {
 
   @Mock
   private GameDao mockGameDao;
+  @Mock
+  private ClientConnectionManager mockClientConnectionManager;
+  @Mock
+  private CookieManager mockCookieManager;
 
   private List<Game> games;
 
@@ -29,7 +36,7 @@ public class GameFacadeTest {
   @BeforeMethod
   public void setUp() throws GameException {
     MockitoAnnotations.initMocks(this);
-    testModel = new GameFacade(mockGameDao);
+    testModel = new GameFacade(mockGameDao, mockCookieManager, mockClientConnectionManager);
 
     games = new ArrayList<>();
 
@@ -42,9 +49,6 @@ public class GameFacadeTest {
     games.add(game1);
 
     when(mockGameDao.getUserGames("player1")).thenReturn(games);
-    when(mockGameDao.getGame(0)).thenReturn(game0);
-    when(mockGameDao.getGame(1)).thenReturn(game1);
-    when(mockGameDao.getGame(2)).thenReturn(game2);
     when(mockGameDao.createGame("player1", "player2")).thenReturn(game0);
     when(mockGameDao.createGame("player1", "pamela")).thenReturn(game1);
     when(mockGameDao.createGame("player2", "player4")).thenReturn(game2);
@@ -52,35 +56,40 @@ public class GameFacadeTest {
   }
 
   @Test
-  public void shouldReturnCorrectGamesForUser() {
+  public void shouldReturnCorrectGamesForUser() throws InvalidUserCookieException, UserNotFoundException {
     List<Game> result = testModel.getUserGames("player1", "cookie");
 
     assertEquals(result, games);
   }
 
   @Test
-  public void shouldCreateGameProperly() throws InvalidUserCookieException, GameException {
+  public void shouldCreateGameProperly() throws InvalidUserCookieException, GameException, UserNotFoundException {
     testModel.createGame("player1", "player2", "cookie");
-    //TODO: Refactor when sockets are added
+    verify(mockClientConnectionManager, times(2)).sendData(eq("player1"), any());
+    verify(mockClientConnectionManager, times(2)).sendData(eq("player2"), any());
   }
 
   @Test
-  public void shouldAddPlayerToQueue() throws InvalidUserCookieException, GameException {
+  public void shouldAddPlayerToQueue() throws InvalidUserCookieException, GameException, UserNotFoundException {
     testModel.createRandomGame("player2", "anotherCookie");
     verify(mockGameDao, never()).createGame(any(), any());
+    verify(mockClientConnectionManager, never()).sendData(eq("player2"), any());
   }
 
   @Test
-  public void shouldCreateRandomGameProperly() throws InvalidUserCookieException, GameException {
+  public void shouldCreateRandomGameProperly() throws InvalidUserCookieException, GameException, UserNotFoundException {
     testModel.createRandomGame("player1", "anotherCookie");
     testModel.createRandomGame("player2", "anotherCookie");
     verify(mockGameDao).createGame(eq("player2"), eq("player1"));
+    verify(mockClientConnectionManager, times(2)).sendData(eq("player1"), any());
+    verify(mockClientConnectionManager, times(2)).sendData(eq("player2"), any());
   }
 
   @Test
-  public void shouldCreateMachineLearningGameProperly() throws InvalidUserCookieException, GameException {
-    testModel.createMachineLearningGame("player1", "cookie");
+  public void shouldCreateMachineLearningGameProperly() throws InvalidUserCookieException, GameException, UserNotFoundException {
+    testModel.createGame("player1", "pamela", "cookie");
     verify(mockGameDao).createGame(eq("player1"), eq("pamela"));
-    //TODO: Refactor when sockets are added
+    verify(mockClientConnectionManager, times(2)).sendData(eq("player1"), any());
+    verify(mockClientConnectionManager, times(2)).sendData(eq("pamela"), any());
   }
 }

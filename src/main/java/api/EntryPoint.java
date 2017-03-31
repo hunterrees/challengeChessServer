@@ -22,6 +22,7 @@ public class EntryPoint {
   private ClientConnectionManager clientConnectionManager;
   private EncryptionManager encryptionManager;
 
+  public static final String MACHINE_AI_USERNAME = "pamela";
   final static String USER_COOKIE = "userCookie";
   final static String GAME_COOKIE = "gameCookie";
 

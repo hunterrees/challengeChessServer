@@ -25,7 +25,7 @@ public class UserFacade {
 
     public UserFacade(){
         userDao = UserDao.getInstance();
-        cookieManager = new CookieManager();
+        cookieManager = CookieManager.getInstance();
     }
 
     UserFacade(UserDao userDAO, CookieManager cookieManager){

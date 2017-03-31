@@ -1,6 +1,8 @@
 package manager;
 
 import dao.UserDao;
+import exception.game.GameNotFoundException;
+import exception.game.InvalidGameCookieException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserNotFoundException;
 import model.User;
@@ -10,18 +12,26 @@ import org.slf4j.LoggerFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Created by ryan on 3/14/17.
- */
 public class CookieManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CookieManager.class);
     private UserDao userDao;
-    public CookieManager(){
+
+    private static CookieManager instance;
+
+    private CookieManager(){
         userDao = UserDao.getInstance();
     }
-    public CookieManager(UserDao userDao){
+
+    CookieManager(UserDao userDao){
         this.userDao = userDao;
+    }
+
+    public static CookieManager getInstance() {
+      if (instance == null) {
+        instance = new CookieManager();
+      }
+      return instance;
     }
 
     public String makeUserCookie(String username) throws UserNotFoundException {
@@ -30,30 +40,24 @@ public class CookieManager {
         String email = user.getEmail();
         String toHash = username + password + email;
         String hash = hash(toHash);
-        String cookie = username + ":" + hash;
-        return cookie;
-
+        return username + ":" + hash;
     }
 
-    public String hash(String toHash) {
+    private String hash(String toHash) {
         MessageDigest sha256 = null;
         try {
             sha256 = MessageDigest.getInstance("SHA-256");
             sha256.reset();
             sha256.update(toHash.getBytes());
             byte[] fullHash = sha256.digest();
-
             return new String(fullHash);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("no such algorithm {}", e);
             return null;
         }
-
-
     }
 
     public boolean validateUserCookie(String cookie) throws UserNotFoundException, InvalidUserCookieException {
-        //TODO: check cookie for valid user
         int indexOfColon = cookie.indexOf(':');
         if(indexOfColon == -1){
             throw new InvalidUserCookieException("Invalid User Cookie");
@@ -69,6 +73,11 @@ public class CookieManager {
         }
     }
 
+    public String makeGameCookie() {
+      return null;
+    }
 
-
+    public boolean validateGameCookie(String cookie) throws GameNotFoundException,InvalidGameCookieException {
+      return false;
+    }
 }
