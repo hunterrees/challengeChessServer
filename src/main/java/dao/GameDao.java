@@ -86,7 +86,7 @@ public class GameDao {
    * @return Game that is specified by the given id.
    * @throws GameNotFoundException if game does not exist.
    */
-  public Game getGame(int gameId) throws GameNotFoundException {
+  Game getGame(int gameId) throws GameNotFoundException {
     LOGGER.info("Getting game {}", gameId);
     if (gameId >= games.size()) {
       throw new GameNotFoundException("Game does not exist");
