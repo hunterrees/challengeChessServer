@@ -172,18 +172,31 @@ public class UserFacadeTest {
         verify(mockUserDAO, never()).addUser(incompleteUser);
     }
 
+    @Test (expectedExceptions = UserException.class, expectedExceptionsMessageRegExp = ".*: not allowed in username.*")
+    public void registerInvalidUsername() throws UserException {
+        testUserFacade.register(new User("has:colon", "pass", "email"));
+        verify(mockUserDAO, never()).addUser(oldUser);
+    }
+
 
     //update
 
     @Test
     public void updateGoodUser() throws InvalidUserCookieException, UserNotFoundException {
-        testUserFacade.updateUser(user1, "GOODCOOKIE");
-        verify(mockUserDAO).updateUser(user1);
+        testUserFacade.updateUser(user2, "user2:GOODCOOKIE");
+        verify(mockUserDAO).updateUser(user2);
     }
 
     @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Invalid User Cookie.*")
     public void updateUserBadCookie() throws InvalidUserCookieException, UserNotFoundException {
         testUserFacade.updateUser(user1, "BADCOOKIE");
+        verify(mockUserDAO, never()).updateUser(user1);
+    }
+
+    @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Cookie does not match user to update.*")
+    public void updateUserNonMatchingCookie() throws InvalidUserCookieException, UserNotFoundException {
+        when(mockCookieManager.validateUserCookie("user2:GOODCOOKIE")).thenReturn(true);
+        testUserFacade.updateUser(user1, "user2:GOODCOOKIE");
         verify(mockUserDAO, never()).updateUser(user1);
     }
 
