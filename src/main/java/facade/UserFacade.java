@@ -1,10 +1,7 @@
 package facade;
 
 import dao.UserDao;
-import exception.user.InvalidUserCookieException;
-import exception.user.InvalidPasswordException;
-import exception.user.UserException;
-import exception.user.UserNotFoundException;
+import exception.user.*;
 
 import manager.CookieManager;
 import model.User;
@@ -39,7 +36,7 @@ public class UserFacade {
      */
     public List<String> getAllUsers() {
         LOGGER.info("UserFacade.getAllUsers");
-        //TODO: get all users from DAO then just get the usernames and return them
+
         List<String> usernames = new ArrayList<String>();
         for(User u: userDao.getAllUsers()){
             usernames.add(u.getUsername());
@@ -58,7 +55,6 @@ public class UserFacade {
      */
     public UserInfo getUser(String username, String cookie) throws UserNotFoundException, InvalidUserCookieException {
         LOGGER.info("UserFacade.getUser");
-        //TODO: return UserInfo
         cookieManager.validateUserCookie(cookie);
         UserInfo user = new UserInfo(userDao.getUser(username));
         return user;
@@ -70,7 +66,8 @@ public class UserFacade {
      * @Pre Username is unique; username, password, online, and email fields are initialized; other fields are 0/null.
      * @Post User object is in database, user cookie is created.
      * @return User cookie.
-     * @throws UserException if that username is already taken or if the username has a ':' in it
+     * @throws UserAlreadyExistsException if that username is already taken
+     * @throws UserException if username has a ':' in it or the datamembers of the User are not already initialized
      */
     public String register(User basicUser) throws UserException {
 
@@ -78,11 +75,14 @@ public class UserFacade {
         if(basicUser.getUsername() == null || basicUser.getPassword() == null || basicUser.getEmail() == null){
             throw new UserException("User info not initialized");
         }
+        if(basicUser.getUsername().indexOf(':') != -1){
+            throw new UserException(": not allowed in username");
+        }
         if(!userDao.hasUser(basicUser.getUsername())){
             basicUser.setOnline();
             userDao.addUser(basicUser);
         }else {
-           throw new UserException("User already exists");
+           throw new UserAlreadyExistsException("User already exists");
         }
 
         return cookieManager.makeUserCookie(basicUser.getUsername());
@@ -129,16 +129,20 @@ public class UserFacade {
     /**
      * Finds matching user in DB and replaces it with the new User info.
      *
-     * @Pre User is non null.
+     * @Pre User is non null. usercookie must be for the user attempting to be updated
      * @Post User with matching username will be updated but win record won't be affected.
      * @throws UserNotFoundException if user does not exist.
-     * @throws InvalidUserCookieException if the cookie is invalid.
+     * @throws InvalidUserCookieException if the cookie is invalid or does not match the user.
      *
      */
     public void updateUser(User user, String cookie) throws UserNotFoundException, InvalidUserCookieException {
 
         LOGGER.info("UserFacade.updateUser");
         cookieManager.validateUserCookie(cookie);
+        String cookieUsername = cookie.substring(0, cookie.indexOf(':'));
+        if(!cookieUsername.equals(user.getUsername())){
+            throw new InvalidUserCookieException("Cookie does not match user to update");
+        }
         userDao.updateUser(user);
     }
 }
