@@ -62,18 +62,10 @@ public class CookieManager {
         }
     }
 
-    public boolean validateUserCookie(String cookie) throws UserNotFoundException, InvalidUserCookieException {
-        int indexOfColon = cookie.indexOf(':');
-        if(indexOfColon == -1){
-            throw new InvalidUserCookieException("Invalid User Cookie");
-        }
-        String cookieUserName = cookie.substring(0, indexOfColon);
-        String tempCookie;
-
-        tempCookie = makeUserCookie(cookieUserName);
-        if(tempCookie.equals(cookie)){
-            return true;
-        }else {
+    public void validateUserCookie(String cookie) throws UserNotFoundException, InvalidUserCookieException {
+        String cookieUserName = getUsername(cookie);
+        String tempCookie = makeUserCookie(cookieUserName);
+        if(!tempCookie.equals(cookie)) {
             throw new InvalidUserCookieException("Invalid User Cookie");
         }
     }
@@ -85,18 +77,23 @@ public class CookieManager {
         return gameID + ":" + hash;
     }
 
-    public boolean validateGameCookie(String cookie) throws GameNotFoundException, InvalidGameCookieException {
+    public void validateGameCookie(String cookie) throws GameNotFoundException, InvalidGameCookieException {
         int indexOfColon = cookie.indexOf(':');
         if(indexOfColon == -1){
             throw new InvalidGameCookieException("Invalid Game Cookie");
         }
         int cookieGameId = Integer.parseInt(cookie.substring(0, indexOfColon));
         String tempCookie = makeGameCookie(cookieGameId);
-        if(tempCookie.equals(cookie)){
-            return true;
-        }else {
+        if(!tempCookie.equals(cookie)){
             throw new InvalidGameCookieException("Invalid Game Cookie");
         }
+    }
 
+    public String getUsername(String cookie) throws InvalidUserCookieException {
+        int indexOfColon = cookie.indexOf(':');
+        if(indexOfColon == -1){
+            throw new InvalidUserCookieException("Invalid User Cookie");
+        }
+        return cookie.substring(0, indexOfColon);
     }
 }
