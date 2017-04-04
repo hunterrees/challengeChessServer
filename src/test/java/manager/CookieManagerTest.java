@@ -73,7 +73,7 @@ public class CookieManagerTest {
     @Test
     public void shouldValidateCookie() throws UserNotFoundException, InvalidUserCookieException {
         String user1Cookie = testCookieManager.makeUserCookie("user1");
-        assertTrue(testCookieManager.validateUserCookie(user1Cookie));
+        testCookieManager.validateUserCookie(user1Cookie);
     }
 
     @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Invalid User Cookie.*")
@@ -111,5 +111,12 @@ public class CookieManagerTest {
     @Test (expectedExceptions = InvalidGameCookieException.class, expectedExceptionsMessageRegExp = ".*Invalid Game Cookie.*")
     public void shouldNotValidateCookie() throws InvalidGameCookieException, GameNotFoundException {
         testCookieManager.validateGameCookie("1:blahblahblah");
+    }
+
+    @Test
+    public void shouldGetUsernameFromCookie() throws InvalidUserCookieException {
+        String cookie = "user1:blahblah";
+        String result = testCookieManager.getUsername(cookie);
+        assertEquals("user1", result);
     }
 }

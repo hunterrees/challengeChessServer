@@ -63,7 +63,6 @@ public class UserFacadeTest {
         when(mockUserDAO.hasUser("oldUser")).thenReturn(true);
 
         when(mockCookieManager.makeUserCookie("user1")).thenReturn("GOODCOOKIE");
-        when(mockCookieManager.validateUserCookie("GOODCOOKIE")).thenReturn(true);
         doThrow(new InvalidUserCookieException("Invalid User Cookie")).when(mockCookieManager).validateUserCookie("BADCOOKIE");
 
         when(mockCookieManager.makeUserCookie("newUser")).thenReturn("GOODCOOKIE");
@@ -184,7 +183,6 @@ public class UserFacadeTest {
 
     @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Cookie does not match user to update.*")
     public void updateUserNonMatchingCookie() throws InvalidUserCookieException, UserNotFoundException {
-        when(mockCookieManager.validateUserCookie("user2:GOODCOOKIE")).thenReturn(true);
         testUserFacade.updateUser(user1, "user2:GOODCOOKIE");
         verify(mockUserDAO, never()).updateUser(user1);
     }

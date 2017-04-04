@@ -36,8 +36,9 @@ public class UserFacade {
      */
     public List<String> getAllUsers() {
         LOGGER.info("UserFacade.getAllUsers");
-        List<String> usernames = new ArrayList<String>();
-        for(User u: userDao.getAllUsers()){
+        List<String> usernames = new ArrayList<>();
+        List<User> users = userDao.getAllUsers();
+        for(User u: users){
             usernames.add(u.getUsername());
         }
         return usernames;

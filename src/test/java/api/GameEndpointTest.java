@@ -4,6 +4,7 @@ import exception.game.GameException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserNotFoundException;
 import facade.GameFacade;
+import manager.CookieManager;
 import model.Game;
 import model.GameStatus;
 import org.mockito.Mock;
@@ -22,13 +23,18 @@ public class GameEndpointTest {
 
   @Mock
   private GameFacade gameFacade;
+  @Mock
+  private CookieManager cookieManager;
 
   private GameEndpoint testModel;
 
   @BeforeMethod
-  public void setUp() {
+  public void setUp() throws InvalidUserCookieException {
     MockitoAnnotations.initMocks(this);
-    testModel = new GameEndpoint(gameFacade);
+    when(cookieManager.getUsername("player4:cookie")).thenReturn("player4");
+    when(cookieManager.getUsername("player3:cookie")).thenReturn("player3");
+    when(cookieManager.getUsername("player1:cookie")).thenReturn("player1");
+    testModel = new GameEndpoint(gameFacade, cookieManager);
   }
 
   @Test

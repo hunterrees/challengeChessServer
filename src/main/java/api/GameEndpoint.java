@@ -5,6 +5,7 @@ import exception.game.GameException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserNotFoundException;
 import facade.GameFacade;
+import manager.CookieManager;
 import model.Game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,20 +24,24 @@ public class GameEndpoint {
   private static final Logger LOGGER = LoggerFactory.getLogger(GameEndpoint.class);
 
   private GameFacade gameFacade;
+  private CookieManager cookieManager;
 
   /**
    * Default constructor.
    */
   public GameEndpoint() {
     gameFacade = new GameFacade();
+    cookieManager = CookieManager.getInstance();
   }
 
   /**
    * Constructor for unit-testing.
    * @param gameFacade Game Facade to hit.
+   * @param cookieManager Cookie Manager to use.
    */
-  GameEndpoint(GameFacade gameFacade) {
+  GameEndpoint(GameFacade gameFacade, CookieManager cookieManager) {
     this.gameFacade = gameFacade;
+    this.cookieManager = cookieManager;
   }
 
   /**
@@ -76,7 +81,7 @@ public class GameEndpoint {
           throws GameException, UserNotFoundException, InvalidUserCookieException {
     try {
       LOGGER.info("/games/create POST hit with cookie {}", cookie);
-      String username = getUsername(cookie); //TODO: move username extraction to CookieManager class
+      String username = cookieManager.getUsername(cookie);
       gameFacade.createRandomGame(username, cookie);
     }
     catch (RuntimeException e) {
@@ -99,16 +104,12 @@ public class GameEndpoint {
           throws GameException, UserNotFoundException, InvalidUserCookieException {
     try {
       LOGGER.info("/games/create/{username} POST hit with cookie {}", cookie);
-      String player1 = getUsername(cookie); //TODO: move username extraction to CookieManager class
+      String player1 = cookieManager.getUsername(cookie);
       gameFacade.createGame(player1, username, cookie);
     }
     catch (RuntimeException e) {
       LOGGER.error("Error in /games/create/{username} POST GET {}", e);
       throw new ServerException(e);
     }
-  }
-
-  private String getUsername(String cookie) {
-    return cookie.substring(0, cookie.indexOf(':'));
   }
 }
