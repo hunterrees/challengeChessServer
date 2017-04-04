@@ -24,7 +24,6 @@ public class UserEndpointTest {
   @Mock
   private UserFacade mockUserFacade;
 
-  private List<User> users;
   private List<String> usernames;
   private User user1;
   private User user2;
@@ -38,7 +37,7 @@ public class UserEndpointTest {
   @BeforeMethod
   public void setUp() throws UserException {
     MockitoAnnotations.initMocks(this);
-    users = new ArrayList<>();
+    List<User> users = new ArrayList<>();
     usernames = new ArrayList<>();
     user1 = new User("user1", "password1", "email1");
     user2 = new User("user2", "password2", "email2");

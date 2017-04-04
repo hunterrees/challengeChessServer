@@ -27,12 +27,6 @@ public class CookieManager {
         gameDao = GameDao.getInstance();
     }
 
-    CookieManager(UserDao userDao){
-        this.userDao = userDao;
-    }
-    CookieManager(GameDao gameDao){
-        this.gameDao = gameDao;
-    }
     CookieManager(UserDao userDao, GameDao gameDao){
         this.userDao = userDao;
         this.gameDao = gameDao;

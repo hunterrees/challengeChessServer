@@ -8,7 +8,6 @@ import exception.game.InvalidGameCookieException;
 import exception.user.InvalidUserCookieException;
 import exception.user.UserException;
 import exception.user.UserNotFoundException;
-import manager.CookieManager;
 import model.Game;
 import model.User;
 import org.mockito.Mock;
@@ -28,11 +27,6 @@ public class CookieManagerTest {
 
     private CookieManager testCookieManager;
 
-    private List<User> users;
-    private User user1;
-    private User user2;
-    private User user3;
-
     @Mock
     private UserDao mockUserDAO;
     @Mock
@@ -41,14 +35,12 @@ public class CookieManagerTest {
     @BeforeMethod
     public void setUp() throws UserException, GameNotFoundException {
         MockitoAnnotations.initMocks(this);
-        users = new ArrayList<>();
-        user1 = new User("user1", "password1", "email1");
-        user2 = new User("user2", "password2", "email2");
-        user3 = new User("user3", "password3", "email3");
+        List<User> users = new ArrayList<>();
+        User user1 = new User("user1", "password1", "email1");
+        User user2 = new User("user2", "password2", "email2");
 
         users.add(user1);
         users.add(user2);
-
 
         when(mockUserDAO.getAllUsers()).thenReturn(users);
         when(mockUserDAO.getUser("user1")).thenReturn(user1);
@@ -60,8 +52,6 @@ public class CookieManagerTest {
 
         when(mockGameDAO.getGame(1)).thenReturn(game1);
         when(mockGameDAO.getGame(2)).thenReturn(game2);
-
-
 
         testCookieManager = new CookieManager(mockUserDAO, mockGameDAO);
     }
@@ -104,7 +94,6 @@ public class CookieManagerTest {
         testCookieManager.validateUserCookie("user5blahblahblah");
     }
 
-
     @Test
     public void shouldMakeMatchingGameCookie() throws GameNotFoundException {
         String cookie1 = testCookieManager.makeGameCookie(1);
@@ -123,9 +112,4 @@ public class CookieManagerTest {
     public void shouldNotValidateCookie() throws InvalidGameCookieException, GameNotFoundException {
         testCookieManager.validateGameCookie("1:blahblahblah");
     }
-
-
-
-
-
 }
