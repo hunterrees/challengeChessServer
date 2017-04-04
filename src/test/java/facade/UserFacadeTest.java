@@ -27,10 +27,8 @@ public class UserFacadeTest {
 
     private UserFacade testUserFacade;
 
-    private List<User> users;
     private User user1;
     private User user2;
-    private User user3;
     private User newUser;
     private User oldUser;
     private User incompleteUser;
@@ -44,10 +42,10 @@ public class UserFacadeTest {
     @BeforeMethod
     public void setUp() throws UserException {
         MockitoAnnotations.initMocks(this);
-        users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         user1 = new User("user1", "password1", "email1");
         user2 = new User("user2", "password2", "email2");
-        user3 = new User("user3", "password3", "email3");
+        User user3 = new User("user3", "password3", "email3");
         newUser = new User("newUser", "newPass", "newEmail");
         oldUser = new User("oldUser", "oldPass", "oldEmail");
         incompleteUser = new User(null, null, null);
@@ -100,8 +98,6 @@ public class UserFacadeTest {
         UserInfo userInfo = testUserFacade.getUser("user1", "BADCOOKIE");
     }
 
-
-
     //login
 
     @Test
@@ -121,21 +117,16 @@ public class UserFacadeTest {
 
     @Test (expectedExceptions = InvalidPasswordException.class, expectedExceptionsMessageRegExp = ".*Invalid Password.*")
     public void badPasswordLogin() throws UserNotFoundException, NoSuchAlgorithmException, InvalidPasswordException {
-
         testUserFacade.login("user1","notRealPassword");
-
     }
 
-
     //logout
-
 
     @Test
     public void shouldLogout() throws InvalidUserCookieException, UserNotFoundException {
         user1.setOnline();
         testUserFacade.logout("user1", "GOODCOOKIE");
         assertTrue(!user1.isOnline());
-
     }
 
     @Test (expectedExceptions = InvalidUserCookieException.class, expectedExceptionsMessageRegExp = ".*Invalid User Cookie.*")
@@ -149,7 +140,6 @@ public class UserFacadeTest {
         user1.setOnline();
         testUserFacade.logout("badUser", "GOODCOOKIE");
     }
-
 
     //register
 
@@ -178,7 +168,6 @@ public class UserFacadeTest {
         verify(mockUserDAO, never()).addUser(oldUser);
     }
 
-
     //update
 
     @Test
@@ -199,7 +188,4 @@ public class UserFacadeTest {
         testUserFacade.updateUser(user1, "user2:GOODCOOKIE");
         verify(mockUserDAO, never()).updateUser(user1);
     }
-
-
-
 }

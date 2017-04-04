@@ -18,7 +18,7 @@ import static api.EntryPoint.USER_COOKIE;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("games")
-class GameEndpoint {
+public class GameEndpoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GameEndpoint.class);
 
@@ -27,7 +27,7 @@ class GameEndpoint {
   /**
    * Default constructor.
    */
-  GameEndpoint() {
+  public GameEndpoint() {
     gameFacade = new GameFacade();
   }
 

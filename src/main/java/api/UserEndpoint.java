@@ -20,7 +20,7 @@ import static api.EntryPoint.USER_COOKIE;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping ("users")
-class UserEndpoint {
+public class UserEndpoint {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserEndpoint.class);
 
   private UserFacade userFacade;
@@ -28,7 +28,7 @@ class UserEndpoint {
   /**
    * Default Constructor.
    */
-  UserEndpoint() {
+  public UserEndpoint() {
     userFacade = new UserFacade();
   }
 

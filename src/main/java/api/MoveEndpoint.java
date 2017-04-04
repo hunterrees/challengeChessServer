@@ -16,7 +16,7 @@ import static api.EntryPoint.USER_COOKIE;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("moves")
-class MoveEndpoint {
+public class MoveEndpoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MoveEndpoint.class);
 
@@ -25,7 +25,7 @@ class MoveEndpoint {
   /**
    * Default Constructor.
    */
-  MoveEndpoint() {
+  public MoveEndpoint() {
     moveFacade = new MoveFacade();
   }
 
