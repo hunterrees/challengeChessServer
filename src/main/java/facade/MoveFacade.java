@@ -61,9 +61,8 @@ public class MoveFacade {
      */
     public List<Move> getMovesForGame(int gameId, String userCookie, String gameCookie) throws InvalidGameCookieException, GameNotFoundException, InvalidUserCookieException, UserNotFoundException {
         LOGGER.info("MoveFacade.getMovesForGame");
-        cookieManager.validateUserCookie(userCookie);
-        cookieManager.validateGameCookie(gameCookie);
-        if(!cookieManager.getUsername(gameCookie).equals(gameId + "")){
+        cookieManager.validateCookies(userCookie, gameCookie);
+        if(Integer.parseInt(cookieManager.getQualifier(gameCookie)) != gameId){
             throw new InvalidGameCookieException("Game cookie doesn't match game id you are requesting");
         }
         return moveDao.getMovesForGame(gameId);
@@ -81,10 +80,9 @@ public class MoveFacade {
      * @throws InvalidGameCookieException if not a valid game cookie
      */
     public void makeMove(Move move, String userCookie, String gameCookie) throws InvalidGameCookieException, GameNotFoundException, InvalidUserCookieException, UserNotFoundException {
-        cookieManager.validateUserCookie(userCookie);
-        cookieManager.validateGameCookie(gameCookie);
-        String requestingUser = cookieManager.getUsername(userCookie);
-        Game game = gameDao.getGame(Integer.parseInt(cookieManager.getUsername(gameCookie)));
+        cookieManager.validateCookies(userCookie, gameCookie);
+        String requestingUser = cookieManager.getQualifier(userCookie);
+        Game game = gameDao.getGame(Integer.parseInt(cookieManager.getQualifier(gameCookie)));
         String otherPlayer;
         if(game.getPlayer1().equals(requestingUser)){
             otherPlayer = game.getPlayer2();
@@ -109,12 +107,11 @@ public class MoveFacade {
      * @throws GameException if that move is not meant to be validated
      */
     public void verifyMove(Move move, String userCookie, String gameCookie) throws InvalidUserCookieException, UserNotFoundException, GameException {
-        cookieManager.validateUserCookie(userCookie);
-        cookieManager.validateGameCookie(gameCookie);
-        String validatingUser = cookieManager.getUsername(userCookie);
+        cookieManager.validateCookies(userCookie, gameCookie);
+        String validatingUser = cookieManager.getQualifier(userCookie);
         if(movesToVerify.containsKey(validatingUser) && movesToVerify.get(validatingUser).equals(move)){
             movesToVerify.remove(validatingUser);
-            moveDao.addMove(Integer.parseInt(cookieManager.getUsername(gameCookie)), move);
+            moveDao.addMove(Integer.parseInt(cookieManager.getQualifier(gameCookie)), move);
         }else {
             throw new GameException("not meant to validate");
         }

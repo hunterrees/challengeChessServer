@@ -116,7 +116,7 @@ public class CookieManagerTest {
     @Test
     public void shouldGetUsernameFromCookie() throws InvalidUserCookieException {
         String cookie = "user1:blahblah";
-        String result = testCookieManager.getUsername(cookie);
+        String result = testCookieManager.getQualifier(cookie);
         assertEquals("user1", result);
     }
 }

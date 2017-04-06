@@ -63,7 +63,7 @@ public class CookieManager {
     }
 
     public void validateUserCookie(String cookie) throws UserNotFoundException, InvalidUserCookieException {
-        String cookieUserName = getUsername(cookie);
+        String cookieUserName = getQualifier(cookie);
         String tempCookie = makeUserCookie(cookieUserName);
         if(!tempCookie.equals(cookie)) {
             throw new InvalidUserCookieException("Invalid User Cookie");
@@ -89,7 +89,12 @@ public class CookieManager {
         }
     }
 
-    public String getUsername(String cookie) throws InvalidUserCookieException {
+    public void validateCookies(String userCookie, String gameCookie) throws InvalidGameCookieException, GameNotFoundException, InvalidUserCookieException, UserNotFoundException {
+        validateUserCookie(userCookie);
+        validateGameCookie(gameCookie);
+    }
+
+    public String getQualifier(String cookie) throws InvalidUserCookieException {
         int indexOfColon = cookie.indexOf(':');
         if(indexOfColon == -1){
             throw new InvalidUserCookieException("Invalid User Cookie");

@@ -81,7 +81,7 @@ public class GameEndpoint {
           throws GameException, UserNotFoundException, InvalidUserCookieException {
     try {
       LOGGER.info("/games/create POST hit with cookie {}", cookie);
-      String username = cookieManager.getUsername(cookie);
+      String username = cookieManager.getQualifier(cookie);
       gameFacade.createRandomGame(username, cookie);
     }
     catch (RuntimeException e) {
@@ -104,7 +104,7 @@ public class GameEndpoint {
           throws GameException, UserNotFoundException, InvalidUserCookieException {
     try {
       LOGGER.info("/games/create/{username} POST hit with cookie {}", cookie);
-      String player1 = cookieManager.getUsername(cookie);
+      String player1 = cookieManager.getQualifier(cookie);
       gameFacade.createGame(player1, username, cookie);
     }
     catch (RuntimeException e) {
