@@ -28,6 +28,7 @@ public class EntryPoint {
   /**
    * Default constructor.
    */
+  @SuppressWarnings ("unused")
   public EntryPoint() {
     clientConnectionManager = ClientConnectionManager.getInstance();
     encryptionManager = EncryptionManager.getInstance();

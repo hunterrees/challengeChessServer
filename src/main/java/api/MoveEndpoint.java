@@ -1,6 +1,8 @@
 package api;
 
+import exception.game.GameException;
 import exception.game.GameNotFoundException;
+import exception.user.UserException;
 import facade.MoveFacade;
 import model.Move;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ public class MoveEndpoint {
   /**
    * Default Constructor.
    */
+  @SuppressWarnings ("unused")
   public MoveEndpoint() {
     moveFacade = new MoveFacade();
   }
@@ -49,8 +52,8 @@ public class MoveEndpoint {
    */
   @RequestMapping(value="{gameId}", method=RequestMethod.GET)
   public List<Move> getMovesForGame(@PathVariable int gameId, @RequestParam(USER_COOKIE) String userCookie,
-                                    @RequestParam(GAME_COOKIE) String gameCookie) throws GameNotFoundException {
-    LOGGER.info("Requesting moves for game {}", gameId);
+                                    @RequestParam(GAME_COOKIE) String gameCookie) throws GameException, UserException {
+    LOGGER.info("Requesting moves for game {} with user cookie {} and game cookie {}", gameId, userCookie, gameCookie);
     return null;
   }
 
@@ -65,8 +68,9 @@ public class MoveEndpoint {
    */
   @RequestMapping(value="{gameId}", method=RequestMethod.POST)
   public void playMove(@PathVariable int gameId, @RequestBody Move move, @RequestParam(USER_COOKIE) String userCookie,
-                       @RequestParam(GAME_COOKIE) String gameCookie) throws GameNotFoundException {
-    LOGGER.info("Playing move {} in game {}", move, gameId);
+                       @RequestParam(GAME_COOKIE) String gameCookie) throws GameException, UserException {
+    LOGGER.info("Playing move {} in game {} with user cookie {} and game cookie {}",
+            move, gameId, userCookie, gameCookie);
   }
 
   /**
@@ -82,6 +86,7 @@ public class MoveEndpoint {
   public void verifyMove(@PathVariable int gameId, @PathVariable int moveId,
                          @RequestParam(USER_COOKIE) String userCookie,
                          @RequestParam(GAME_COOKIE) String gameCookie) throws GameNotFoundException {
-    LOGGER.info("Verifying move {} in game {}", moveId, gameId);
+    LOGGER.info("Verifying move {} in game {} with user cookie {} and game cookie {}",
+            moveId, gameId, userCookie, gameCookie);
   }
 }

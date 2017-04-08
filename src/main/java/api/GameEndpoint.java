@@ -3,6 +3,7 @@ package api;
 import exception.ServerException;
 import exception.game.GameException;
 import exception.user.InvalidUserCookieException;
+import exception.user.UserException;
 import exception.user.UserNotFoundException;
 import facade.GameFacade;
 import manager.CookieManager;
@@ -29,6 +30,7 @@ public class GameEndpoint {
   /**
    * Default constructor.
    */
+  @SuppressWarnings ("unused")
   public GameEndpoint() {
     gameFacade = new GameFacade();
     cookieManager = CookieManager.getInstance();
@@ -36,8 +38,8 @@ public class GameEndpoint {
 
   /**
    * Constructor for unit-testing.
-   * @param gameFacade Game Facade to hit.
-   * @param cookieManager Cookie Manager to use.
+   * @param gameFacade GameFacade to hit.
+   * @param cookieManager CookieManager to use.
    */
   GameEndpoint(GameFacade gameFacade, CookieManager cookieManager) {
     this.gameFacade = gameFacade;
@@ -55,17 +57,15 @@ public class GameEndpoint {
    */
   @RequestMapping(value="{username}", method=RequestMethod.GET)
   List<Game> getUserGames(@PathVariable String username, @RequestParam(USER_COOKIE) String cookie)
-          throws InvalidUserCookieException, UserNotFoundException {
-    List<Game> userGames;
+          throws UserException {
     try {
       LOGGER.info("/games/{username} GET hit by {} with cookie {}", username, cookie);
-      userGames = gameFacade.getUserGames(username, cookie);
+      return gameFacade.getUserGames(username, cookie);
     }
     catch (RuntimeException e) {
       LOGGER.error("Error in /games/{username} GET {}", e);
       throw new ServerException(e);
     }
-    return userGames;
   }
 
   /**
@@ -77,12 +77,10 @@ public class GameEndpoint {
    * @throws UserNotFoundException when user does not exist.
    */
   @RequestMapping(value="create", method=RequestMethod.POST)
-  void createRandomGame(@RequestParam(USER_COOKIE) String cookie)
-          throws GameException, UserNotFoundException, InvalidUserCookieException {
+  void createRandomGame(@RequestParam(USER_COOKIE) String cookie) throws GameException, UserException {
     try {
       LOGGER.info("/games/create POST hit with cookie {}", cookie);
-      String username = cookieManager.getQualifier(cookie);
-      gameFacade.createRandomGame(username, cookie);
+      gameFacade.createRandomGame(cookieManager.getQualifier(cookie), cookie);
     }
     catch (RuntimeException e) {
       LOGGER.error("Error in /games/create POST GET {}", e);
@@ -101,11 +99,10 @@ public class GameEndpoint {
    */
   @RequestMapping(value="create/{username}", method=RequestMethod.POST)
   void createGame(@PathVariable String username, @RequestParam(USER_COOKIE) String cookie)
-          throws GameException, UserNotFoundException, InvalidUserCookieException {
+          throws GameException, UserException {
     try {
-      LOGGER.info("/games/create/{username} POST hit with cookie {}", cookie);
-      String player1 = cookieManager.getQualifier(cookie);
-      gameFacade.createGame(player1, username, cookie);
+      LOGGER.info("/games/create/{username} POST hit with username {} and cookie {}", username, cookie);
+      gameFacade.createGame(cookieManager.getQualifier(cookie), username, cookie);
     }
     catch (RuntimeException e) {
       LOGGER.error("Error in /games/create/{username} POST GET {}", e);

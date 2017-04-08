@@ -37,14 +37,11 @@ public class UserEndpointTest {
   @BeforeMethod
   public void setUp() throws UserException {
     MockitoAnnotations.initMocks(this);
-    List<User> users = new ArrayList<>();
     usernames = new ArrayList<>();
     user1 = new User("user1", "password1", "email1");
     user2 = new User("user2", "password2", "email2");
     user3 = new User("user3", "password3", "email3");
 
-    users.add(user1);
-    users.add(user2);
     usernames.add(user1.getUsername());
     usernames.add(user2.getUsername());
 
