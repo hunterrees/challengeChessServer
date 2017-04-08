@@ -8,6 +8,8 @@ public class Move {
   private String endLocation;
   private String result;
 
+  public Move() {}
+
   public Move(String startLocation, String endLocation, String result) {
     this.startLocation = startLocation;
     this.endLocation = endLocation;

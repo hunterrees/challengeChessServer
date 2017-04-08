@@ -15,6 +15,8 @@ public class User {
   private int loses;
   private int draws;
 
+  public User() {}
+
   public User(String username, String password, String email) {
     this.username = username;
     this.password = password;
