@@ -31,9 +31,9 @@ public class GameEndpointTest {
   @BeforeMethod
   public void setUp() throws InvalidUserCookieException {
     MockitoAnnotations.initMocks(this);
-    when(cookieManager.getUsername("player4:cookie")).thenReturn("player4");
-    when(cookieManager.getUsername("player3:cookie")).thenReturn("player3");
-    when(cookieManager.getUsername("player1:cookie")).thenReturn("player1");
+    when(cookieManager.getQualifier("player4:cookie")).thenReturn("player4");
+    when(cookieManager.getQualifier("player3:cookie")).thenReturn("player3");
+    when(cookieManager.getQualifier("player1:cookie")).thenReturn("player1");
     testModel = new GameEndpoint(gameFacade, cookieManager);
   }
 
