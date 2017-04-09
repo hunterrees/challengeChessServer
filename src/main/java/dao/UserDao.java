@@ -14,7 +14,7 @@ public class UserDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
-  private Map<String, User> users;
+  private final Map<String, User> users;
   private static UserDao userDAO = null;
 
   UserDao() {

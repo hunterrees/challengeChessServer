@@ -20,12 +20,12 @@ import static api.EntryPoint.USER_COOKIE;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("games")
-public class GameEndpoint {
+class GameEndpoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GameEndpoint.class);
 
-  private GameFacade gameFacade;
-  private CookieManager cookieManager;
+  private final GameFacade gameFacade;
+  private final CookieManager cookieManager;
 
   /**
    * Default constructor.
@@ -38,8 +38,8 @@ public class GameEndpoint {
 
   /**
    * Constructor for unit-testing.
-   * @param gameFacade GameFacade to hit.
-   * @param cookieManager CookieManager to use.
+   * @param gameFacade Game Facade to hit.
+   * @param cookieManager Cookie Manager to use.
    */
   GameEndpoint(GameFacade gameFacade, CookieManager cookieManager) {
     this.gameFacade = gameFacade;

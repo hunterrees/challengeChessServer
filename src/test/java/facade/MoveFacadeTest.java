@@ -2,25 +2,21 @@ package facade;
 
 import dao.GameDao;
 import dao.MoveDao;
-import dao.UserDao;
 import exception.game.GameException;
 import exception.game.GameNotFoundException;
 import exception.game.InvalidGameCookieException;
 import exception.user.InvalidUserCookieException;
-import exception.user.UserException;
 import exception.user.UserNotFoundException;
 import manager.ClientConnectionManager;
 import manager.CookieManager;
 import model.Move;
 import model.User;
-import model.UserInfo;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -67,16 +63,13 @@ public class MoveFacadeTest {
         moves.add(move2);
         moves.add(move3);
 
-
-
         when(mockMoveDao.getMovesForGame(1)).thenReturn(moves);
 
         when(mockCookieManager.getQualifier("1:"+any())).thenReturn("1");
         doThrow(new InvalidUserCookieException("Invalid User Cookie")).when(mockCookieManager).validateCookies("user1:BADCOOKIE", "1:BADCOOKIE");
         doThrow(new InvalidGameCookieException("Invalid Game Cookie")).when(mockCookieManager).validateCookies("user1:GOODCOOKIE", "1:BADCOOKIE");
 
-        testMoveFacade = new MoveFacade(mockClientConnectionManager, mockMoveDao, mockCookieManager, mockGameDao);
-
+        testMoveFacade = new MoveFacade(mockClientConnectionManager, mockCookieManager, mockMoveDao, mockGameDao);
     }
 
     //getAllUsers

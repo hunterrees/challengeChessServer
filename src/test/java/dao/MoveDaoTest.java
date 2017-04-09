@@ -27,26 +27,25 @@ public class MoveDaoTest {
 
   @Test
   public void shouldCreateGameWithInitialMove() throws GameNotFoundException {
-    int index = testModel.addInitialMove(move0);
+    testModel.addMove(0, move0);
     move0.setGameId(0);
     move0.setId(0);
 
-    List<Move> result = testModel.getMovesForGame(index);
+    List<Move> result = testModel.getMovesForGame(0);
 
     assertEquals(result.get(0), move0);
   }
 
   @Test
   public void shouldAddMove() throws GameNotFoundException {
-    int index = testModel.addInitialMove(move0);
     move0.setGameId(0);
     move0.setId(0);
 
-    testModel.addMove(index, move1);
+    testModel.addMove(0, move1);
     move1.setGameId(0);
     move1.setId(1);
 
-    List<Move> result = testModel.getMovesForGame(index);
+    List<Move> result = testModel.getMovesForGame(0);
 
     assertEquals(result.size(), 2);
     assertEquals(result.get(1), move1);
@@ -54,8 +53,8 @@ public class MoveDaoTest {
 
   @Test
   public void shouldGetMovesForGame() throws GameNotFoundException {
-    int index = testModel.addInitialMove(move0);
-    List<Move> result = testModel.getMovesForGame(index);
+    testModel.addMove(0, move0);
+    List<Move> result = testModel.getMovesForGame(0);
 
     assertEquals(result.size(), 1);
   }

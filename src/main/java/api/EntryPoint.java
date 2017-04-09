@@ -19,8 +19,8 @@ public class EntryPoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EntryPoint.class);
 
-  private ClientConnectionManager clientConnectionManager;
-  private EncryptionManager encryptionManager;
+  private final ClientConnectionManager clientConnectionManager;
+  private final EncryptionManager encryptionManager;
 
   final static String USER_COOKIE = "userCookie";
   final static String GAME_COOKIE = "gameCookie";

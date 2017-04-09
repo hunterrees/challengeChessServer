@@ -14,7 +14,7 @@ public class GameDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GameDao.class);
 
-  private List<Game> games;
+  private final List<Game> games;
 
   private static GameDao instance;
 

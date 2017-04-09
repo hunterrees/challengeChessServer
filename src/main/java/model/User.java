@@ -39,10 +39,6 @@ public class User {
 
   public String getEmail(){return email;}
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
   public void setEmail(String email) {
     this.email = email;
   }
@@ -59,43 +55,24 @@ public class User {
     this.online = false;
   }
 
-  public List<String> getFriends() {
+  List<String> getFriends() {
     return friends;
   }
 
-  public void addFriend(String friend) {
-    friends.add(friend);
-  }
-
-  public int getRank() {
+  int getRank() {
     return rank;
   }
 
-  public void setRank(int rank) {
-    this.rank = rank;
-  }
-
-  public int getWins() {
+  int getWins() {
     return wins;
   }
 
-  public void addWin() {
-    wins++;
-  }
-
-  public int getLoses() {
+  int getLoses() {
     return loses;
   }
 
-  public void addLoss() {
-    loses++;
-  }
-
-  public int getDraws() {
+  int getDraws() {
     return draws;
   }
 
-  public void addDraw() {
-    draws++;
-  }
 }
