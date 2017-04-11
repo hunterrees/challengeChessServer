@@ -31,8 +31,8 @@ public class EncryptionManager {
   AlgorithmParameterSpec parameterSpec;
   private DHParameterSpec params;
 
-  private Map<String, BigInteger> privateExponents;
-  Map<String, byte[]> sharedKeys;
+  private final Map<String, BigInteger> privateExponents;
+  final Map<String, byte[]> sharedKeys;
 
   private static EncryptionManager instance;
 
@@ -107,7 +107,7 @@ public class EncryptionManager {
    * @throws UserNotFoundException when the user does not have a shared key set up
    * @return decrypted password
    */
-  public String decryptPassword(String username, byte[] password) throws UserNotFoundException {
+  String decryptPassword(String username, byte[] password) throws UserNotFoundException {
     try {
       LOGGER.info("Decrypting password for {}", username);
       if (!sharedKeys.containsKey(username)) {

@@ -8,42 +8,20 @@ public class Move {
   private String endLocation;
   private String result;
 
+  public Move() {}
+
   public Move(String startLocation, String endLocation, String result) {
     this.startLocation = startLocation;
     this.endLocation = endLocation;
     this.result = result;
   }
 
-  public int getId() {
-    return id;
-  }
-
   public void setId(int id) {
     this.id = id;
   }
 
-  public int getGameId() {
-    return gameId;
-  }
-
   public void setGameId(int gameId) {
     this.gameId = gameId;
-  }
-
-  public String getStartLocation() {
-    return startLocation;
-  }
-
-  public void setStartLocation(String startLocation) {
-    this.startLocation = startLocation;
-  }
-
-  public String getEndLocation() {
-    return endLocation;
-  }
-
-  public void setEndLocation(String endLocation) {
-    this.endLocation = endLocation;
   }
 
   public String getResult() {

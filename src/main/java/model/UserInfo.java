@@ -5,10 +5,10 @@ import java.util.List;
 
 public class UserInfo {
 
-  private String username;
+  private final String username;
   private String email;
   private boolean online;
-  private List<String> friends;
+  private final List<String> friends;
   private int rank;
   private int wins;
   private int loses;
@@ -34,42 +34,6 @@ public class UserInfo {
     this.wins = user.getWins();
     this.loses = user.getLoses();
     this.draws = user.getDraws();
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public void setOnline() {
-    this.online = true;
-  }
-
-  public void setOffline() {
-    this.online = false;
-  }
-
-  public void addFriend(String friend) {
-    friends.add(friend);
-  }
-
-  public void setRank(int rank) {
-    this.rank = rank;
-  }
-
-  public void addWin() {
-    wins++;
-  }
-
-  public void addLoss() {
-    loses++;
-  }
-
-  public void addDraw() {
-    draws++;
   }
 
   @Override

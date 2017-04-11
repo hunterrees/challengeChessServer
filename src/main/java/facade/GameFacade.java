@@ -18,10 +18,10 @@ public class GameFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GameFacade.class);
 
-  private GameDao gameDao;
-  private Queue<String> userQueue;
-  private CookieManager cookieManager;
-  private ClientConnectionManager clientConnectionManager;
+  private final GameDao gameDao;
+  private final Queue<String> userQueue;
+  private final CookieManager cookieManager;
+  private final ClientConnectionManager clientConnectionManager;
 
   /**
    * Default Constructor.
@@ -57,7 +57,7 @@ public class GameFacade {
    */
   public List<Game> getUserGames(String username, String userCookie)
           throws InvalidUserCookieException, UserNotFoundException {
-    LOGGER.info("Getting all games for user {}", username);
+    LOGGER.info("Getting all games for user {} with cookie {}", username, userCookie);
     cookieManager.validateUserCookie(userCookie);
     return gameDao.getUserGames(username);
   }
@@ -75,14 +75,16 @@ public class GameFacade {
    */
   public void createGame(String player1, String player2, String userCookie)
           throws InvalidUserCookieException, GameException, UserNotFoundException {
-    LOGGER.info("Creating game between {} and {}", player1, player2);
+    LOGGER.info("Creating game between {} and {} with userCookie {}", player1, player2, userCookie);
     cookieManager.validateUserCookie(userCookie);
 
     Game game = gameDao.createGame(player1, player2);
+    LOGGER.info("Creating game {} and sending data.", game);
     clientConnectionManager.sendData(player1, game);
     clientConnectionManager.sendData(player2, game);
 
     String gameCookie = cookieManager.makeGameCookie(game.getGameId());
+    LOGGER.info("Creating game cookie {} and sending data.", gameCookie);
     clientConnectionManager.sendData(player1, gameCookie);
     clientConnectionManager.sendData(player2, gameCookie);
   }
@@ -103,9 +105,11 @@ public class GameFacade {
     cookieManager.validateUserCookie(userCookie);
     if (!userQueue.isEmpty()) {
       String player2 = userQueue.poll();
+      LOGGER.info("{} was was waiting for a game.", player2);
       createGame(username, player2, userCookie);
     }
     else {
+      LOGGER.info("Adding player to the queue to wait for an opponent.");
       userQueue.add(username);
     }
   }

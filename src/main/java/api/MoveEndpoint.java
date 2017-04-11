@@ -1,6 +1,8 @@
 package api;
 
+import exception.game.GameException;
 import exception.game.GameNotFoundException;
+import exception.user.UserException;
 import facade.MoveFacade;
 import model.Move;
 import org.slf4j.Logger;
@@ -16,15 +18,16 @@ import static api.EntryPoint.USER_COOKIE;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("moves")
-public class MoveEndpoint {
+class MoveEndpoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MoveEndpoint.class);
 
-  private MoveFacade moveFacade;
+  private final MoveFacade moveFacade;
 
   /**
    * Default Constructor.
    */
+  @SuppressWarnings ("unused")
   public MoveEndpoint() {
     moveFacade = new MoveFacade();
   }
@@ -48,10 +51,10 @@ public class MoveEndpoint {
    * @throws GameNotFoundException if the game with the given id given does not exist.
    */
   @RequestMapping(value="{gameId}", method=RequestMethod.GET)
-  public List<Move> getMovesForGame(@PathVariable int gameId, @RequestParam(USER_COOKIE) String userCookie,
-                                    @RequestParam(GAME_COOKIE) String gameCookie) throws GameNotFoundException {
-    LOGGER.info("Requesting moves for game {}", gameId);
-    return null;
+  List<Move> getMovesForGame(@PathVariable int gameId, @RequestParam(USER_COOKIE) String userCookie,
+                                    @RequestParam(GAME_COOKIE) String gameCookie) throws GameException, UserException {
+    LOGGER.info("Requesting moves for game {} with user cookie {} and game cookie {}", gameId, userCookie, gameCookie);
+    return moveFacade.getMovesForGame(gameId, userCookie, gameCookie);
   }
 
   /**
@@ -64,24 +67,27 @@ public class MoveEndpoint {
    * @throws GameNotFoundException if the game with the given id given does not exist.
    */
   @RequestMapping(value="{gameId}", method=RequestMethod.POST)
-  public void playMove(@PathVariable int gameId, @RequestBody Move move, @RequestParam(USER_COOKIE) String userCookie,
-                       @RequestParam(GAME_COOKIE) String gameCookie) throws GameNotFoundException {
-    LOGGER.info("Playing move {} in game {}", move, gameId);
+  void playMove(@PathVariable int gameId, @RequestBody Move move, @RequestParam(USER_COOKIE) String userCookie,
+                       @RequestParam(GAME_COOKIE) String gameCookie) throws GameException, UserException {
+    LOGGER.info("Playing move {} in game {} with user cookie {} and game cookie {}",
+            move, gameId, userCookie, gameCookie);
+    moveFacade.makeMove(move, userCookie, gameCookie);
   }
 
   /**
    * Verifies that the given move is valid in the game. Adds the move to the database.
    *
    * @param gameId positive integer id of the game.
-   * @param moveId positive integer id of the move that is being verified.
+   * @param move non-null Move object to be verified.
    * @param userCookie cookie of the user (used for verification).
    * @param gameCookie cookie of the game (used for verification).
    * @throws GameNotFoundException if the game with the given id given does not exist.
    */
   @RequestMapping(value="{gameId}/{moveId}", method=RequestMethod.PUT)
-  public void verifyMove(@PathVariable int gameId, @PathVariable int moveId,
-                         @RequestParam(USER_COOKIE) String userCookie,
-                         @RequestParam(GAME_COOKIE) String gameCookie) throws GameNotFoundException {
-    LOGGER.info("Verifying move {} in game {}", moveId, gameId);
+  void verifyMove(@PathVariable int gameId, @RequestBody Move move, @RequestParam(USER_COOKIE) String userCookie,
+                         @RequestParam(GAME_COOKIE) String gameCookie) throws GameException, UserException {
+    LOGGER.info("Verifying move {} in game {} with user cookie {} and game cookie {}",
+            move, gameId, userCookie, gameCookie);
+    moveFacade.verifyMove(move, userCookie, gameCookie);
   }
 }

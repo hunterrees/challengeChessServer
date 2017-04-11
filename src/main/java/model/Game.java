@@ -7,6 +7,8 @@ public class Game {
   private String player2;
   private GameStatus status;
 
+  public Game() {}
+
   public Game(int gameId, String player1, String player2, GameStatus status) {
     this.gameId = gameId;
     this.player1 = player1;

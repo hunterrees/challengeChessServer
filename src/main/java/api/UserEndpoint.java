@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import static api.EntryPoint.USER_COOKIE;
@@ -20,14 +19,15 @@ import static api.EntryPoint.USER_COOKIE;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping ("users")
-public class UserEndpoint {
+class UserEndpoint {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserEndpoint.class);
 
-  private UserFacade userFacade;
+  private final UserFacade userFacade;
 
   /**
    * Default Constructor.
    */
+  @SuppressWarnings ("unused")
   public UserEndpoint() {
     userFacade = new UserFacade();
   }
@@ -35,7 +35,7 @@ public class UserEndpoint {
   /**
    * Constructor for unit-testing.
    *
-   * @param userFacade User Facade to hit.
+   * @param userFacade UserFacade to hit.
    */
   UserEndpoint(UserFacade userFacade) {
     this.userFacade = userFacade;
@@ -50,15 +50,13 @@ public class UserEndpoint {
 
   @RequestMapping(method = RequestMethod.GET)
   List<String> getAllUsers() throws ServerException {
-    List<String> result;
     try {
       LOGGER.info("/users GET hit");
-      result = userFacade.getAllUsers();
+      return userFacade.getAllUsers();
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users GET {}", e);
       throw new ServerException(e);
     }
-    return result;
   }
 
   /**
@@ -72,17 +70,15 @@ public class UserEndpoint {
    * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="{username}", method=RequestMethod.GET)
-  UserInfo getUserInfo(@PathVariable String username,
-                       @RequestParam(USER_COOKIE) String cookie) throws UserException, ServerException {
-    UserInfo result;
+  UserInfo getUserInfo(@PathVariable String username, @RequestParam(USER_COOKIE) String cookie)
+          throws UserException, ServerException {
     try {
       LOGGER.info("/users/{username} GET hit with username {} and cookie {}", username, cookie);
-      result = userFacade.getUser(username, cookie);
+      return userFacade.getUser(username, cookie);
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/{username} GET {}", e);
       throw new ServerException(e);
     }
-    return result;
   }
 
   /**
@@ -97,15 +93,13 @@ public class UserEndpoint {
   @RequestMapping(value="{username}", method=RequestMethod.POST)
   @ResponseStatus(HttpStatus.CREATED)
   String register(@RequestBody User user) throws ServerException, UserException {
-    String userCookie;
     try {
       LOGGER.info("/users/{username} POST hit with user {}", user);
-      userCookie = userFacade.register(user);
+      return userFacade.register(user);
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/{username} POST {}", e);
       throw new ServerException(e);
     }
-    return userCookie;
   }
 
   /**
@@ -119,8 +113,8 @@ public class UserEndpoint {
    * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="{username}", method=RequestMethod.PUT)
-  void updateUserInfo(@RequestBody User user,
-                      @RequestParam(USER_COOKIE) String cookie) throws UserException, ServerException {
+  void updateUserInfo(@RequestBody User user, @RequestParam(USER_COOKIE) String cookie)
+          throws UserException, ServerException {
     try {
       LOGGER.info("/users/{username} PUT hit with user {} and cookie {}", user, cookie);
       userFacade.updateUser(user, cookie);
@@ -142,16 +136,14 @@ public class UserEndpoint {
    * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="login/{username}", method=RequestMethod.PUT)
-  String login(@PathVariable String username, @RequestBody User user) throws UserException, ServerException, NoSuchAlgorithmException {
-    String userCookie;
+  String login(@PathVariable String username, @RequestBody User user) throws UserException, ServerException {
     try {
       LOGGER.info("/users/login/{username} PUT hit with username {} and user {}", username, user);
-      userCookie = userFacade.login(username, user.getPassword());
+      return userFacade.login(username, user.getPassword());
     } catch (RuntimeException e) {
       LOGGER.error("Error in /users/login/{username} PUT {}", e);
       throw new ServerException(e);
     }
-    return userCookie;
   }
 
   /**
@@ -165,8 +157,8 @@ public class UserEndpoint {
    * @throws ServerException when an unexpected error occurs.
    */
   @RequestMapping(value="logout/{username}", method=RequestMethod.PUT)
-  void logout(@PathVariable String username,
-              @RequestParam(USER_COOKIE) String cookie) throws UserException, ServerException {
+  void logout(@PathVariable String username, @RequestParam(USER_COOKIE) String cookie)
+          throws UserException, ServerException {
     try {
       LOGGER.info("/users/logout/{username} PUT hit with username {} and cookie {}", username, cookie);
       userFacade.logout(username, cookie);

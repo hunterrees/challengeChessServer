@@ -82,6 +82,5 @@ public class GameDaoTest {
     List<Game> result = testModel.getUserGames("player4");
 
     assertEquals(result.size(), 0);
-
   }
 }

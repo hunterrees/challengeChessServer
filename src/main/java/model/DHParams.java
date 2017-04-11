@@ -16,15 +16,8 @@ public class DHParams {
     return params;
   }
 
-  public void setParams(DHParameterSpec params) {
-    this.params = params;
-  }
-
   public byte[] getPublicParam() {
     return publicParam;
   }
 
-  public void setPublicParam(byte[] publicParam) {
-    this.publicParam = publicParam;
-  }
 }

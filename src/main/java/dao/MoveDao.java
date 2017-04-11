@@ -12,7 +12,7 @@ public class MoveDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MoveDao.class);
 
-  private List<List<Move>> games;
+  private final List<List<Move>> games;
 
   private static MoveDao instance;
 
@@ -50,25 +50,14 @@ public class MoveDao {
   public void addMove(int gameId, Move move) throws GameNotFoundException {
     LOGGER.info("Adding move {} to game {}", move, gameId);
     checkGameExists(gameId);
+    if (gameId == games.size()) {
+      games.add(new ArrayList<>());
+    }
     games.get(gameId).add(move);
   }
 
-  /**
-   * Creates a game and adds the first move.
-   *
-   * @param move non-null Move object to be added.
-   * @return gameId of the game that was created.
-   */
-  public int addInitialMove(Move move) {
-    LOGGER.info("Creating new game with initial move {}", move);
-    games.add(new ArrayList<>());
-    int index = games.size() - 1;
-    games.get(index).add(move);
-    return index;
-  }
-
   private void checkGameExists(int gameId) throws GameNotFoundException {
-    if (gameId >= games.size() || gameId < 0) {
+    if (gameId > games.size() || gameId < 0) {
       throw new GameNotFoundException(String.format("Game %s not found", gameId));
     }
   }
